@@ -33,4 +33,4 @@ temp/
 
 # Local migration planning docs
 SUPABASE_TO_SOLANA_MIGRATION_PLAN.md
-REFACTOR_ROLLBACK_PLAYBOOK.md
+
