@@ -5,6 +5,7 @@ node_modules/
 dist/
 build/
 .vite/
+target/
 
 # Environment files (secrets)
 .env
@@ -33,4 +34,4 @@ temp/
 
 # Local migration planning docs
 SUPABASE_TO_SOLANA_MIGRATION_PLAN.md
-REFACTOR_ROLLBACK_PLAYBOOK.md
+

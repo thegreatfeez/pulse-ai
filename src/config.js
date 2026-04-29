@@ -11,6 +11,8 @@ export const SOL_MINT = 'So11111111111111111111111111111111111111112';
 export const TOKEN_PROGRAM_ID = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 
 export const RPC_ENDPOINT = import.meta.env.VITE_HELIUS_RPC_URL || 'https://api.mainnet-beta.solana.com';
+export const SOLANA_CLUSTER = import.meta.env.VITE_SOLANA_CLUSTER
+  || (RPC_ENDPOINT.includes('devnet') ? 'devnet' : 'mainnet-beta');
 
 export const RISK_THRESHOLDS = {
   LOW: 25,

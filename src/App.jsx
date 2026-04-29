@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import WalletProvider from './components/WalletProvider';
-import { AuthProvider } from './lib/auth-context';
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';
 import TokenDiscovery from './components/TokenDiscovery';
@@ -14,6 +13,7 @@ import useWalletPortfolio from './hooks/useWalletPortfolio';
 function AppContent() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedToken, setSelectedToken] = useState(null);
+  const [swapSide, setSwapSide] = useState('buy');
   const [detailToken, setDetailToken] = useState(null);
   const [aiToken, setAiToken] = useState(null);
 
@@ -26,6 +26,14 @@ function AppContent() {
 
   const handleSwap = (token) => {
     setSelectedToken(token);
+    setSwapSide('buy');
+    setDetailToken(null);
+    setActiveTab('swap');
+  };
+
+  const handleSellBack = (token) => {
+    setSelectedToken(token);
+    setSwapSide('sell');
     setDetailToken(null);
     setActiveTab('swap');
   };
@@ -45,7 +53,7 @@ function AppContent() {
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
       <main className="max-w-7xl mx-auto px-4 py-6">
         {activeTab === 'dashboard' && (
-          <Dashboard onSelectToken={handleSelectToken} />
+          <Dashboard onSelectToken={handleSelectToken} onSellToken={handleSellBack} />
         )}
         {activeTab === 'ai' && (
           <AIInsights
@@ -63,6 +71,7 @@ function AppContent() {
           <SwapPanel
             selectedToken={selectedToken}
             portfolioValue={portfolio.totalValueUsd}
+            initialSide={swapSide}
           />
         )}
       </main>
@@ -83,9 +92,7 @@ function AppContent() {
 export default function App() {
   return (
     <WalletProvider>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <AppContent />
     </WalletProvider>
   );
 }
