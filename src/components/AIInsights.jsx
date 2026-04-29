@@ -7,6 +7,8 @@ import useWalletPortfolio from '../hooks/useWalletPortfolio';
 import useTokenDiscovery from '../hooks/useTokenDiscovery';
 import RiskGauge from './RiskGauge';
 import { computeRiskScore } from '../services/riskEngine';
+import usePulseProtocol from '../hooks/usePulseProtocol';
+import { buildAdviceCommitmentPayloads } from '../lib/commitmentSchema';
 
 const SIGNAL_CONFIG = {
   STRONG_BUY: { color: 'text-emerald-400', bg: 'bg-emerald-500/15', icon: '▲▲' },
@@ -287,13 +289,14 @@ function getTimeAgo(dateStr) {
 }
 
 export default function AIInsights({ selectedToken, onSelectToken }) {
-  const { connected } = useWallet();
+  const { connected, publicKey } = useWallet();
   const { price } = useSolPrice();
   const portfolio = useWalletPortfolio(price?.usd);
   const { tokens: discoveryTokens } = useTokenDiscovery();
   const { brief, loading: briefLoading, fetchBrief } = useMarketBrief();
   const { analysis, loading: analysisLoading, analyze } = useTokenAnalysis();
   const { history, loading: historyLoading, refresh: refreshHistory } = useAnalysisHistory();
+  const { recordAdviceCommitment } = usePulseProtocol();
 
   const handleGenerateBrief = () => {
     fetchBrief(
@@ -304,7 +307,36 @@ export default function AIInsights({ selectedToken, onSelectToken }) {
   };
 
   const handleAnalyzeToken = (token) => {
-    analyze(token).then(() => {
+    analyze(token).then(async (result) => {
+      if (connected && publicKey && result) {
+        try {
+          const nonce = BigInt(Date.now());
+          const riskScore = computeRiskScore(token).score;
+          const { contextPayload, advicePayload } = buildAdviceCommitmentPayloads({
+            wallet: publicKey.toBase58(),
+            token: token.address || token.mint,
+            portfolioValueUsd: portfolio.totalValueUsd,
+            solPriceUsd: price?.usd || null,
+            analysis: result,
+            riskScore,
+          });
+          const portfolioValueLamports = Math.max(
+            0,
+            Math.floor((portfolio.totalValueUsd || 0) / (price?.usd || 1) * 1e9)
+          );
+
+          await recordAdviceCommitment({
+            nonce,
+            advicePayload,
+            contextPayload,
+            portfolioValueLamports,
+            riskScore,
+          });
+        } catch (e) {
+          console.warn('[recordAdviceCommitment]', e);
+        }
+      }
+
       // Refresh history after new analysis
       setTimeout(refreshHistory, 1000);
     });

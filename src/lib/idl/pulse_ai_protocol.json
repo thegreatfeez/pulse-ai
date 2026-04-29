@@ -1,0 +1,53 @@
+{
+  "address": "8CxcCkx2KxpYGQLice4r6LdjNjqsXB7eB5E8ZQMG89ig",
+  "metadata": {
+    "name": "pulse_ai_protocol",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "initializeUserRiskProfile",
+      "discriminator": [27, 27, 189, 232, 187, 39, 49, 173],
+      "accounts": [
+        { "name": "authority", "writable": true, "signer": true },
+        { "name": "userRiskProfile", "writable": true },
+        { "name": "systemProgram", "address": "11111111111111111111111111111111" }
+      ],
+      "args": [
+        { "name": "riskMode", "type": "u8" },
+        { "name": "maxPositionBps", "type": "u16" },
+        { "name": "maxConcentrationBps", "type": "u16" }
+      ]
+    },
+    {
+      "name": "updateUserRiskProfile",
+      "discriminator": [130, 157, 222, 201, 93, 111, 190, 140],
+      "accounts": [
+        { "name": "authority", "signer": true },
+        { "name": "userRiskProfile", "writable": true }
+      ],
+      "args": [
+        { "name": "riskMode", "type": "u8" },
+        { "name": "maxPositionBps", "type": "u16" },
+        { "name": "maxConcentrationBps", "type": "u16" }
+      ]
+    },
+    {
+      "name": "recordAdviceCommitment",
+      "discriminator": [194, 80, 70, 168, 47, 240, 124, 194],
+      "accounts": [
+        { "name": "authority", "writable": true, "signer": true },
+        { "name": "adviceCommitment", "writable": true },
+        { "name": "systemProgram", "address": "11111111111111111111111111111111" }
+      ],
+      "args": [
+        { "name": "nonce", "type": "u64" },
+        { "name": "adviceHash", "type": { "array": ["u8", 32] } },
+        { "name": "contextHash", "type": { "array": ["u8", 32] } },
+        { "name": "portfolioValueLamports", "type": "u64" },
+        { "name": "riskScore", "type": "u8" }
+      ]
+    }
+  ]
+}

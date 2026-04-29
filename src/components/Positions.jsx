@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { supabase } from '../lib/supabase';
 import RiskGauge from './RiskGauge';
+import usePulseProtocol from '../hooks/usePulseProtocol';
+import { SOLANA_CLUSTER } from '../config';
 
 function formatDate(ts) {
   return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -12,6 +14,7 @@ export default function Positions() {
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(true);
   const walletAddr = publicKey?.toBase58();
+  const { positionIntents, refreshPositionIntents } = usePulseProtocol();
 
   const fetchPositions = useCallback(async () => {
     if (!walletAddr) return;
@@ -31,9 +34,12 @@ export default function Positions() {
   }, [walletAddr]);
 
   useEffect(() => {
-    if (connected) fetchPositions();
+    if (connected) {
+      fetchPositions();
+      refreshPositionIntents();
+    }
     else { setPositions([]); setLoading(false); }
-  }, [connected, fetchPositions]);
+  }, [connected, fetchPositions, refreshPositionIntents]);
 
   if (!connected) {
     return (
@@ -48,13 +54,37 @@ export default function Positions() {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold">Trade Positions</h2>
         <button
-          onClick={fetchPositions}
+          onClick={() => {
+            fetchPositions();
+            refreshPositionIntents();
+          }}
           disabled={loading}
           className="px-3 py-1.5 text-xs bg-pulse-card border border-pulse-border rounded-lg hover:bg-slate-800 transition disabled:opacity-50"
         >
           Refresh
         </button>
       </div>
+
+      {SOLANA_CLUSTER === 'devnet' && (
+        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3">
+          <p className="text-xs text-yellow-300 mb-2">Devnet Simulation Positions</p>
+          {positionIntents.length === 0 ? (
+            <p className="text-xs text-slate-400">No devnet intent positions yet.</p>
+          ) : (
+            <div className="space-y-1.5">
+              {positionIntents.slice(0, 10).map((intent) => (
+                <div key={`${intent.nonce}-${intent.tokenMint}`} className="text-xs flex items-center justify-between">
+                  <span className={intent.side === 0 ? 'text-pulse-green' : 'text-pulse-red'}>
+                    {intent.side === 0 ? 'BUY' : 'SELL'}
+                  </span>
+                  <span className="text-slate-300">{intent.tokenMint.slice(0, 6)}...{intent.tokenMint.slice(-6)}</span>
+                  <span className="text-slate-400">#{intent.nonce}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-16">
@@ -69,6 +99,35 @@ export default function Positions() {
         </div>
       ) : (
         <div className="space-y-2">
+          {SOLANA_CLUSTER === 'devnet' && positionIntents.map((intent) => (
+            <div key={`intent-${intent.nonce}-${intent.tokenMint}`} className="bg-pulse-card border border-yellow-500/30 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                    intent.side === 0 ? 'bg-pulse-green/15 text-pulse-green' : 'bg-pulse-red/15 text-pulse-red'
+                  }`}>
+                    {intent.side === 0 ? 'BUY' : 'SELL'}
+                  </span>
+                  <span className="font-semibold">{intent.tokenMint.slice(0, 6)}...{intent.tokenMint.slice(-6)}</span>
+                  <span className="text-[10px] text-yellow-300">SIMULATED</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div>
+                  <span className="text-slate-500">Intent Nonce</span>
+                  <p className="font-medium">{intent.nonce}</p>
+                </div>
+                <div>
+                  <span className="text-slate-500">Amount (raw)</span>
+                  <p className="font-medium">{intent.amountLamports}</p>
+                </div>
+                <div>
+                  <span className="text-slate-500">Slippage</span>
+                  <p className="font-medium">{(intent.expectedSlippageBps / 100).toFixed(2)}%</p>
+                </div>
+              </div>
+            </div>
+          ))}
           {positions.map(pos => (
             <div key={pos.id} className="bg-pulse-card border border-pulse-border rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">

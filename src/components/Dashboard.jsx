@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import useSolPrice from '../hooks/useSolPrice';
 import useWalletPortfolio from '../hooks/useWalletPortfolio';
 import RiskGauge from './RiskGauge';
 import { computeRiskScore, generateSignals } from '../services/riskEngine';
+import usePulseProtocol from '../hooks/usePulseProtocol';
 
 function StatCard({ label, value, sub, accent }) {
   return (
@@ -30,6 +32,9 @@ function TokenRow({ token, onClick }) {
         <div className="flex items-center gap-2">
           <span className="font-medium text-sm truncate">{token.symbol}</span>
           <span className="text-xs text-slate-500 truncate">{token.name}</span>
+          {token.isSimulated && (
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/15 text-yellow-300">SIM</span>
+          )}
         </div>
         <div className="flex items-center gap-2 mt-0.5">
           <span className="text-xs text-slate-400">${token.priceUsd?.toFixed(6)}</span>
@@ -53,16 +58,38 @@ function TokenRow({ token, onClick }) {
       <div className="text-right shrink-0">
         <p className="text-sm font-medium">${(token.valueUsd || 0).toFixed(2)}</p>
         <p className="text-xs text-slate-500">{token.amount?.toFixed(2)} tokens</p>
+        <p className="text-[10px] text-pulse-accent mt-0.5">Click to sell back</p>
       </div>
       <RiskGauge score={risk.score} size="sm" />
     </div>
   );
 }
 
-export default function Dashboard({ onSelectToken }) {
+export default function Dashboard({ onSelectToken, onSellToken }) {
   const { connected, publicKey } = useWallet();
   const { price } = useSolPrice();
   const portfolio = useWalletPortfolio(price?.usd);
+  const {
+    initializeUserRiskProfile,
+    updateUserRiskProfile,
+    loading: protocolLoading,
+    profile,
+    profilePda,
+    riskPolicy,
+    riskPolicyPda,
+    positionIntents,
+    profileLoading,
+  } = usePulseProtocol();
+  const [riskModeInput, setRiskModeInput] = useState(1);
+  const [maxPositionInput, setMaxPositionInput] = useState(500);
+  const [maxConcentrationInput, setMaxConcentrationInput] = useState(3000);
+
+  useEffect(() => {
+    if (!profile) return;
+    setRiskModeInput(profile.riskMode);
+    setMaxPositionInput(profile.maxPositionBps);
+    setMaxConcentrationInput(profile.maxConcentrationBps);
+  }, [profile]);
 
   if (!connected) {
     return (
@@ -115,6 +142,19 @@ export default function Dashboard({ onSelectToken }) {
           </p>
         </div>
         <button
+          onClick={async () => {
+            try {
+              await initializeUserRiskProfile();
+            } catch (e) {
+              console.error('[initializeUserRiskProfile]', e);
+            }
+          }}
+          disabled={protocolLoading || profileLoading || !!profile}
+          className="px-3 py-1.5 text-xs bg-pulse-card border border-pulse-border rounded-lg hover:bg-slate-800 transition disabled:opacity-50 mr-2"
+        >
+          {profileLoading ? 'Checking Profile...' : protocolLoading ? 'Initializing...' : profile ? 'Profile Initialized' : 'Init On-Chain Profile'}
+        </button>
+        <button
           onClick={portfolio.refresh}
           disabled={portfolio.loading}
           className="px-3 py-1.5 text-xs bg-pulse-card border border-pulse-border rounded-lg hover:bg-slate-800 transition disabled:opacity-50"
@@ -150,6 +190,126 @@ export default function Dashboard({ onSelectToken }) {
         </div>
       </div>
 
+      <div className="bg-pulse-card border border-pulse-border rounded-xl p-4">
+        <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">On-Chain Risk Profile</p>
+        {profile ? (
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+              <div>
+                <p className="text-slate-500 text-xs">Risk Mode</p>
+                <p className="font-medium">{profile.riskMode}</p>
+              </div>
+              <div>
+                <p className="text-slate-500 text-xs">Max Position</p>
+                <p className="font-medium">{(profile.maxPositionBps / 100).toFixed(2)}%</p>
+              </div>
+              <div>
+                <p className="text-slate-500 text-xs">Max Concentration</p>
+                <p className="font-medium">{(profile.maxConcentrationBps / 100).toFixed(2)}%</p>
+              </div>
+              <div>
+                <p className="text-slate-500 text-xs">PDA</p>
+                <p className="font-medium">{profilePda?.slice(0, 6)}...{profilePda?.slice(-6)}</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Update Profile</p>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+                <input
+                  type="number"
+                  min={0}
+                  max={255}
+                  value={riskModeInput}
+                  onChange={(e) => setRiskModeInput(Number(e.target.value))}
+                  className="bg-slate-900 border border-pulse-border rounded px-2 py-1.5 text-sm"
+                  placeholder="Risk mode"
+                />
+                <input
+                  type="number"
+                  min={0}
+                  max={10000}
+                  value={maxPositionInput}
+                  onChange={(e) => setMaxPositionInput(Number(e.target.value))}
+                  className="bg-slate-900 border border-pulse-border rounded px-2 py-1.5 text-sm"
+                  placeholder="Max position bps"
+                />
+                <input
+                  type="number"
+                  min={0}
+                  max={10000}
+                  value={maxConcentrationInput}
+                  onChange={(e) => setMaxConcentrationInput(Number(e.target.value))}
+                  className="bg-slate-900 border border-pulse-border rounded px-2 py-1.5 text-sm"
+                  placeholder="Max concentration bps"
+                />
+                <button
+                  onClick={async () => {
+                    try {
+                      await updateUserRiskProfile({
+                        riskMode: riskModeInput,
+                        maxPositionBps: maxPositionInput,
+                        maxConcentrationBps: maxConcentrationInput,
+                      });
+                    } catch (e) {
+                      console.error('[updateUserRiskProfile]', e);
+                    }
+                  }}
+                  disabled={protocolLoading}
+                  className="px-3 py-1.5 text-sm bg-pulse-accent/20 border border-pulse-accent/40 rounded hover:bg-pulse-accent/30 disabled:opacity-50"
+                >
+                  {protocolLoading ? 'Updating...' : 'Update On-Chain'}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="text-sm text-slate-400">No on-chain profile found yet. Initialize it to store your wallet risk policy baseline.</p>
+        )}
+      </div>
+
+      <div className="bg-pulse-card border border-pulse-border rounded-xl p-4">
+        <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">On-Chain Risk Policy</p>
+        {riskPolicy ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+            <div>
+              <p className="text-slate-500 text-xs">Max Position</p>
+              <p className="font-medium">{(riskPolicy.maxPositionBps / 100).toFixed(2)}%</p>
+            </div>
+            <div>
+              <p className="text-slate-500 text-xs">Max Concentration</p>
+              <p className="font-medium">{(riskPolicy.maxConcentrationBps / 100).toFixed(2)}%</p>
+            </div>
+            <div>
+              <p className="text-slate-500 text-xs">Volatility Scale</p>
+              <p className="font-medium">{(riskPolicy.volatilityScaleBps / 100).toFixed(2)}%</p>
+            </div>
+            <div>
+              <p className="text-slate-500 text-xs">PDA</p>
+              <p className="font-medium">{riskPolicyPda?.slice(0, 6)}...{riskPolicyPda?.slice(-6)}</p>
+            </div>
+          </div>
+        ) : (
+          <p className="text-sm text-slate-400">No on-chain risk policy initialized for this authority yet.</p>
+        )}
+      </div>
+
+      <div className="bg-pulse-card border border-pulse-border rounded-xl p-4">
+        <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Recent On-Chain Position Intents</p>
+        {positionIntents.length > 0 ? (
+          <div className="space-y-2 max-h-40 overflow-y-auto">
+            {positionIntents.map((intent) => (
+              <div key={`${intent.nonce}-${intent.tokenMint}`} className="text-xs border border-pulse-border rounded p-2">
+                <span className="mr-2">#{intent.nonce}</span>
+                <span className="mr-2">{intent.side === 0 ? 'BUY' : 'SELL'}</span>
+                <span>{intent.tokenMint.slice(0, 6)}...{intent.tokenMint.slice(-6)}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-slate-400">No position intents found yet.</p>
+        )}
+      </div>
+
       {/* Token Holdings */}
       <div className="bg-pulse-card border border-pulse-border rounded-xl overflow-hidden">
         <div className="px-4 py-3 border-b border-pulse-border">
@@ -166,7 +326,7 @@ export default function Dashboard({ onSelectToken }) {
         ) : (
           <div className="divide-y divide-pulse-border">
             {portfolio.tokens.map(token => (
-              <TokenRow key={token.mint} token={token} onClick={onSelectToken} />
+              <TokenRow key={token.mint} token={token} onClick={onSellToken || onSelectToken} />
             ))}
           </div>
         )}

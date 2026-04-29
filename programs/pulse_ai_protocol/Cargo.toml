@@ -1,0 +1,20 @@
+[package]
+name = "pulse_ai_protocol"
+version = "0.1.0"
+description = "Pulse AI risk management protocol program"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "pulse_ai_protocol"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+idl-build = ["anchor-lang/idl-build"]
+default = []
+
+[dependencies]
+anchor-lang = "0.30.1"
