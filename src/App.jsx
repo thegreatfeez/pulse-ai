@@ -10,6 +10,7 @@ import SwapPanel from './components/SwapPanel';
 import TokenDetail from './components/TokenDetail';
 import AIInsights from './components/AIInsights';
 import PulseLandingPage from './components/PulseLandingPage';
+import BridgePanel from './components/BridgePanel';
 import useSolPrice from './hooks/useSolPrice';
 import useWalletPortfolio from './hooks/useWalletPortfolio';
 
@@ -127,6 +128,9 @@ function AppContent() {
             portfolioValue={portfolio.totalValueUsd}
             initialSide={swapSide}
           />
+        )}
+        {activeTab === 'bridge' && (
+          <BridgePanel theme={theme} />
         )}
       </main>
 

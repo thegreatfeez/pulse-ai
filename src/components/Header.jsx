@@ -11,6 +11,7 @@ export default function Header({ activeTab, setActiveTab, theme, onToggleTheme, 
     { id: 'discover', label: 'Discover' },
     { id: 'positions', label: 'Positions' },
     { id: 'swap', label: 'Swap' },
+    { id: 'bridge', label: 'Bridge' },
   ];
 
   return (
