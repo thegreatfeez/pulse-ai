@@ -18,4 +18,17 @@ export default defineConfig({
     cors: true,
     allowedHosts: true,
   },
+  build: {
+    chunkSizeWarningLimit: 900,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined;
+          if (id.includes('recharts') || id.includes('d3-')) return 'charts-vendor';
+          if (id.includes('@supabase')) return 'supabase-vendor';
+          return 'vendor';
+        },
+      },
+    },
+  },
 })

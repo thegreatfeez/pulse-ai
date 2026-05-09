@@ -1,7 +1,8 @@
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import useSolPrice from '../hooks/useSolPrice';
+import PulseLogo from './PulseLogo';
 
-export default function Header({ activeTab, setActiveTab }) {
+export default function Header({ activeTab, setActiveTab, theme, onToggleTheme, onGoHome }) {
   const { price } = useSolPrice();
 
   const tabs = [
@@ -13,16 +14,18 @@ export default function Header({ activeTab, setActiveTab }) {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-pulse-bg/95 backdrop-blur border-b border-pulse-border">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-pulse-accent to-pulse-cyan flex items-center justify-center text-lg font-bold">
-            P
-          </div>
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-pulse-border bg-pulse-bg/92 backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 py-3.5">
+        <button
+          type="button"
+          onClick={onGoHome}
+          className="flex items-center gap-3 border-none bg-transparent p-0 text-left"
+        >
+          <PulseLogo size={40} />
           <div>
-            <h1 className="text-lg font-bold tracking-tight">Solana Pulse AI</h1>
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-pulse-green animate-pulse" />
+            <h1 className="text-lg font-semibold tracking-tight text-pulse-text">Pulse AI</h1>
+            <div className="flex items-center gap-2 text-xs text-pulse-muted">
+              <span className="h-1.5 w-1.5 rounded-full bg-pulse-green" />
               {price ? (
                 <span>
                   SOL ${price.usd.toLocaleString(undefined, { maximumFractionDigits: 2 })}
@@ -31,21 +34,21 @@ export default function Header({ activeTab, setActiveTab }) {
                   </span>
                 </span>
               ) : (
-                <span>Loading...</span>
+              <span>Loading...</span>
               )}
             </div>
           </div>
-        </div>
+        </button>
 
-        <nav className="hidden md:flex items-center gap-1 bg-pulse-card rounded-lg p-1">
+        <nav className="hidden md:flex items-center gap-5">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+              className={`border-b-2 px-1 py-2 text-sm font-medium transition-all ${
                 activeTab === tab.id
-                  ? 'bg-pulse-accent text-white shadow-lg shadow-pulse-accent/20'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'border-pulse-accent text-pulse-text'
+                  : 'border-transparent text-pulse-muted hover:text-pulse-text'
               }`}
             >
               {tab.label}
@@ -53,11 +56,33 @@ export default function Header({ activeTab, setActiveTab }) {
           ))}
         </nav>
 
-        <WalletMultiButton />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onToggleTheme}
+            className="hidden min-h-12 items-center rounded-xl border border-pulse-border bg-pulse-card px-4 text-sm font-medium text-pulse-text transition hover:border-pulse-accent/40 sm:inline-flex"
+          >
+            {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          </button>
+          <WalletMultiButton />
+        </div>
       </div>
 
-      {/* Mobile nav */}
-      <div className="md:hidden flex items-center gap-1 px-4 pb-3 overflow-x-auto">
+      <div className="md:hidden flex items-center gap-2 px-4 pb-3 overflow-x-auto">
+        <button
+          type="button"
+          onClick={onGoHome}
+          className="shrink-0 rounded-lg border border-pulse-border bg-pulse-card px-3 py-2 text-xs font-medium text-pulse-text"
+        >
+          Home
+        </button>
+        <button
+          type="button"
+          onClick={onToggleTheme}
+          className="shrink-0 rounded-lg border border-pulse-border bg-pulse-card px-3 py-2 text-xs font-medium text-pulse-text"
+        >
+          {theme === 'dark' ? 'Light' : 'Dark'}
+        </button>
         {tabs.map(tab => (
           <button
             key={tab.id}
@@ -65,7 +90,7 @@ export default function Header({ activeTab, setActiveTab }) {
             className={`px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-all ${
               activeTab === tab.id
                 ? 'bg-pulse-accent text-white'
-                : 'text-slate-400 bg-pulse-card'
+                : 'text-pulse-muted bg-pulse-card'
             }`}
           >
             {tab.label}

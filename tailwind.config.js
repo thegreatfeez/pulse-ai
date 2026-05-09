@@ -5,31 +5,49 @@ export default {
     extend: {
       colors: {
         pulse: {
-          bg: '#020617',
-          card: '#0f172a',
-          border: '#1e293b',
-          accent: '#8b5cf6',
-          green: '#10b981',
-          red: '#ef4444',
-          amber: '#f59e0b',
-          cyan: '#06b6d4',
+          bg: 'rgb(var(--pulse-bg) / <alpha-value>)',
+          card: 'rgb(var(--pulse-card) / <alpha-value>)',
+          border: 'rgb(var(--pulse-border) / <alpha-value>)',
+          accent: 'rgb(var(--pulse-accent) / <alpha-value>)',
+          green: 'rgb(var(--pulse-green) / <alpha-value>)',
+          red: 'rgb(var(--pulse-red) / <alpha-value>)',
+          amber: 'rgb(var(--pulse-amber) / <alpha-value>)',
+          cyan: 'rgb(var(--pulse-cyan) / <alpha-value>)',
+          text: 'rgb(var(--pulse-text) / <alpha-value>)',
+          muted: 'rgb(var(--pulse-muted) / <alpha-value>)',
         },
+        'app-bg': 'rgb(var(--bg-primary) / <alpha-value>)',
+        'app-card': 'rgb(var(--surface-card) / <alpha-value>)',
+        'app-panel': 'rgb(var(--panel-elevated) / <alpha-value>)',
+        'app-sidebar': 'rgb(var(--sidebar-bg) / <alpha-value>)',
+        'app-border': 'rgb(var(--border-strong) / <alpha-value>)',
+        'app-muted': 'rgb(var(--surface-muted) / <alpha-value>)',
+        'app-text': 'rgb(var(--text-primary) / <alpha-value>)',
+        'app-accent': 'rgb(var(--accent-primary) / <alpha-value>)',
+        'app-accent-strong': 'rgb(var(--accent-strong) / <alpha-value>)',
+        'app-cyan': 'rgb(var(--accent-cyan) / <alpha-value>)',
+        'app-success': 'rgb(var(--state-success) / <alpha-value>)',
+        'app-warning': 'rgb(var(--state-warning) / <alpha-value>)',
+        'app-danger': 'rgb(var(--state-danger) / <alpha-value>)',
       },
-      animation: {
-        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
-        'signal-flash': 'signal-flash 1s ease-in-out infinite',
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Manrope', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
-      keyframes: {
-        'pulse-glow': {
-          '0%, 100%': { boxShadow: '0 0 5px rgba(139, 92, 246, 0.3)' },
-          '50%': { boxShadow: '0 0 20px rgba(139, 92, 246, 0.6)' },
-        },
-        'signal-flash': {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.5' },
-        },
+      boxShadow: {
+        panel: '0 20px 55px -28px rgba(2, 6, 23, 0.55)',
+        glow: '0 10px 30px -18px rgba(20, 184, 166, 0.55)',
+      },
+      backgroundImage: {
+        'app-radial':
+          'radial-gradient(circle at top left, rgba(20, 184, 166, 0.14), transparent 28%), radial-gradient(circle at top right, rgba(103, 232, 249, 0.12), transparent 22%)',
+        'app-glow':
+          'linear-gradient(180deg, rgba(20, 184, 166, 0.12) 0%, rgba(20, 184, 166, 0) 100%)',
+        'app-hero':
+          'linear-gradient(135deg, rgba(17, 24, 39, 0.94), rgba(11, 17, 32, 0.92)), radial-gradient(circle at top right, rgba(20, 184, 166, 0.18), transparent 30%)',
       },
     },
   },
   plugins: [],
-}
+};
