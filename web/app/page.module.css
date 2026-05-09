@@ -1,0 +1,911 @@
+.landingPage {
+  --background: var(--bg-primary);
+  --surface: var(--bg-surface);
+  --surface-soft: #edf4fb;
+  --surface-deep: var(--text-primary);
+  --primary: var(--accent-blue);
+  --primary-soft: color-mix(in srgb, var(--accent-blue) 12%, transparent);
+  --text-main: var(--text-primary);
+  --text-muted: var(--text-secondary);
+  --text-soft: var(--text-secondary);
+  --border: var(--border);
+  --success: var(--success);
+  min-height: 100vh;
+  width: 100%;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent-blue) 12%, transparent), transparent 28%),
+    linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-primary) 55%, var(--bg-primary) 100%);
+  color: var(--text-main);
+  overflow-x: hidden;
+}
+
+.testimonialSection,
+.featureSection {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.heroSection {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 1.5rem 0 4.5rem;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.heroSection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(15, 23, 42, 0.28), rgba(15, 23, 42, 0.18)),
+    url("/customer.jpg") center 24% / cover no-repeat;
+  filter: blur(18px);
+  opacity: 0.2;
+  transform: scale(1.08);
+  pointer-events: none;
+}
+
+.heroInner {
+  position: relative;
+  width: min(1120px, calc(100% - 2rem));
+  min-height: calc(100vh - 6rem);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  color: var(--text-main);
+  font-size: 1.08rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.brandMark {
+  display: grid;
+  place-items: center;
+  position: relative;
+  width: 2.7rem;
+  height: 2.7rem;
+  border-radius: 1rem;
+  background: linear-gradient(145deg, var(--accent-blue), #0f4fd6);
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--accent-blue) 24%, transparent);
+  overflow: hidden;
+}
+
+.brandMark::before,
+.brandMark::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+}
+
+.brandMark::before {
+  inset: 0.68rem;
+  background: color-mix(in srgb, var(--bg-surface) 96%, transparent);
+}
+
+.brandMark::after {
+  width: 0.7rem;
+  height: 0.7rem;
+  top: 0.42rem;
+  right: 0.42rem;
+  background: #93c5fd;
+  box-shadow: 0 0 0 0.18rem rgba(255, 255, 255, 0.16);
+}
+
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.mobileMenuToggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  cursor: pointer;
+  z-index: 100;
+}
+
+.mobileOverlay {
+  display: none;
+}
+
+.navLink,
+.navButton,
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
+.navLink {
+  padding: 0.82rem 1rem;
+  color: var(--text-muted);
+}
+
+.navButton,
+.primaryButton {
+  padding: 0.95rem 1.25rem;
+  background: linear-gradient(135deg, var(--accent-blue), color-mix(in srgb, var(--accent-blue) 80%, black));
+  color: var(--bg-surface);
+  box-shadow: 0 14px 26px color-mix(in srgb, var(--accent-blue) 18%, transparent);
+  text-align: center;
+}
+
+.secondaryButton {
+  padding: 0.95rem 1.25rem;
+  background: color-mix(in srgb, var(--bg-surface) 78%, transparent);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  backdrop-filter: blur(12px);
+  text-align: center;
+
+}
+
+.navLink:hover,
+.navButton:hover,
+.primaryButton:hover,
+.secondaryButton:hover {
+  transform: translateY(-2px);
+}
+
+.heroShell {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(360px, 0.98fr);
+  gap: 2.5rem;
+  align-items: center;
+  padding: 2rem 0 0;
+}
+
+.heroBackdrop {
+  display: none;
+}
+
+.heroCopy,
+.heroVisual {
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow,
+.sectionEyebrow {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: rgba(219, 234, 254, 0.92);
+  color: var(--primary);
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.eyebrow {
+  padding: 0.5rem 0.85rem;
+  margin-bottom: 1.2rem;
+}
+
+.heroCopy h1 {
+  max-width: 11ch;
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.07em;
+  margin-bottom: 1.15rem;
+}
+
+.heroHeadline {
+  display: inline;
+}
+
+.heroHeadlineSpace {
+  display: inline;
+}
+
+.heroHeadlineWord {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.heroHeadlineLetter {
+  display: inline-block;
+  color: var(--text-main);
+  opacity: 0;
+  transform: translateY(1.1em);
+  will-change: transform, opacity;
+  animation: heroHeadlineLetterScroll 10s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  animation-delay: var(--hero-letter-delay);
+}
+
+.heroHeadlineLetterAccent {
+  color: var(--accent-blue);
+}
+
+@keyframes heroHeadlineLetterScroll {
+
+  0%,
+  6% {
+    opacity: 0;
+    transform: translateY(1.1em);
+  }
+
+  14%,
+  86% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-0.35em);
+  }
+}
+
+.heroCopy p {
+  max-width: 34rem;
+  font-size: 1.03rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 20px;
+}
+
+.featureCard {
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-surface) 82%, transparent);
+  box-shadow: 0 20px 42px rgba(15, 23, 42, 0.06);
+  backdrop-filter: blur(14px);
+}
+
+.heroVisual {
+  display: grid;
+  justify-items: end;
+}
+
+.heroPhotoCard {
+  position: relative;
+  width: min(100%, 38rem);
+  padding: 1rem;
+  border-radius: 2.35rem;
+  background: color-mix(in srgb, var(--bg-surface) 78%, transparent);
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+}
+
+.heroPhotoStage {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: 1.7rem;
+  overflow: hidden;
+  isolation: isolate;
+  background: color-mix(in srgb, var(--bg-primary) 72%, white);
+}
+
+.heroImageSlide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: perspective(1200px) rotateY(-90deg) scale(0.94);
+  transform-origin: center right;
+  transition:
+    opacity 700ms ease,
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.heroImageSlideActive {
+  opacity: 1;
+  transform: perspective(1200px) rotateY(0deg) scale(1);
+  z-index: 1;
+}
+
+.heroImage {
+  display: block;
+  object-fit: cover;
+  border-radius: 1.7rem;
+}
+
+.testimonialSection {
+  padding: 0 0 4rem;
+}
+
+.testimonialIntro {
+  max-width: 40rem;
+  margin-bottom: 1.6rem;
+}
+
+.testimonialIntro h2 {
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 1.06;
+  letter-spacing: -0.05em;
+}
+
+.testimonialShell {
+  position: relative;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 4.5rem 3.5rem;
+}
+
+.testimonialCard {
+  position: relative;
+  padding: 2rem;
+  border-radius: 2rem;
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--bg-surface) 92%, transparent), rgba(237, 244, 251, 0.88)),
+    var(--bg-surface);
+  box-shadow: 0 20px 42px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.testimonialQuoteMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  margin-bottom: 1.2rem;
+  border-radius: 0.95rem;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.testimonialQuote {
+  max-width: 46rem;
+  font-size: clamp(1.08rem, 2vw, 1.38rem);
+  line-height: 1.85;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.testimonialMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.7rem;
+}
+
+.testimonialIdentity {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.testimonialAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.92rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.testimonialAvatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.testimonialMeta strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+}
+
+.testimonialMeta span {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.testimonialStat {
+  padding: 0.7rem 0.9rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-blue) 8%, transparent);
+  color: var(--primary);
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.testimonialButton,
+.testimonialDot {
+  border: none;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+.testimonialButton {
+  position: absolute;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg-surface) 92%, transparent);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.05);
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.testimonialButtonLeft {
+  left: 0;
+}
+
+.testimonialButtonRight {
+  right: 0;
+}
+
+.testimonialButton:hover,
+.testimonialDot:hover {
+  transform: translateY(calc(-50% - 2px));
+}
+
+.testimonialDots {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transform: translateX(-50%);
+}
+
+.testimonialDot {
+  width: 0.78rem;
+  height: 0.78rem;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.35);
+}
+
+.testimonialDotActive {
+  width: 2rem;
+  background: var(--primary);
+}
+
+.sectionHeading h2 {
+  font-size: clamp(2.1rem, 4vw, 3.2rem);
+  line-height: 1.04;
+  letter-spacing: -0.06em;
+}
+
+.sectionEyebrow {
+  padding: 0.48rem 0.82rem;
+  margin-bottom: 1rem;
+}
+
+.cardKicker,
+.featureAccent {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cardKicker {
+  margin-bottom: 1rem;
+  color: #93c5fd;
+}
+
+.featureSection {
+  padding: 3rem 0 5rem;
+}
+
+.sectionHeading {
+  max-width: 42rem;
+  margin-bottom: 2.5rem;
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.featureCard {
+  position: relative;
+  border-radius: 1.7rem;
+  padding: 1.75rem;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(4.5rem) scale(0.96);
+  filter: blur(10px);
+  transition:
+    transform 240ms ease,
+    box-shadow 240ms ease,
+    border-color 240ms ease;
+}
+
+.featureCardVisible {
+  opacity: 1;
+  animation: featureCardDropIn 760ms cubic-bezier(0.22, 1, 0.36, 1) var(--feature-delay, 0ms) forwards;
+}
+
+.featureCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+      color-mix(in srgb, var(--accent-blue) 0%, transparent) 0%,
+      color-mix(in srgb, var(--accent-blue) 10%, transparent) 48%,
+      color-mix(in srgb, white 22%, transparent) 100%);
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  opacity: 0.18;
+  transition: opacity 240ms ease;
+  pointer-events: none;
+  animation: featureCardGlow 10s ease-in-out infinite;
+}
+
+.featureCard:nth-child(2)::before {
+  animation-delay: 1.2s;
+}
+
+.featureCard:nth-child(3)::before {
+  animation-delay: 2.4s;
+}
+
+.featureCard:hover,
+.heroPhotoCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 28px 56px rgba(15, 23, 42, 0.12);
+}
+
+.featureCard:hover {
+  border-color: color-mix(in srgb, var(--accent-blue) 32%, var(--border));
+}
+
+.featureCard:hover::before {
+  opacity: 0.42;
+}
+
+.featureAccent {
+  padding: 0.22rem 0.62rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-blue) 10%, transparent);
+  color: var(--accent-blue);
+  margin-bottom: 0.85rem;
+  transition:
+    transform 240ms ease,
+    background-color 240ms ease;
+}
+
+.featureIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 0.9rem;
+  margin-bottom: 1rem;
+  background: var(--primary-soft);
+  color: var(--primary);
+  animation: featureIconPulse 7s ease-in-out infinite;
+  transition:
+    transform 240ms ease,
+    background-color 240ms ease,
+    box-shadow 240ms ease;
+}
+
+.featureCard:nth-child(2) .featureIcon {
+  animation-delay: 1.1s;
+}
+
+.featureCard:nth-child(3) .featureIcon {
+  animation-delay: 2.2s;
+}
+
+.featureCard:hover .featureIcon {
+  transform: translateY(-4px) scale(1.06) rotate(-6deg);
+  background: color-mix(in srgb, var(--accent-blue) 18%, transparent);
+  box-shadow: 0 14px 28px color-mix(in srgb, var(--accent-blue) 20%, transparent);
+}
+
+.featureCard:hover .featureAccent {
+  transform: translateX(4px);
+  background: color-mix(in srgb, var(--accent-blue) 16%, transparent);
+}
+
+.featureCard h3 {
+  font-size: 1.22rem;
+  margin-bottom: 0.8rem;
+}
+
+.featureCard p {
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+@keyframes featureCardGlow {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+    opacity: 0.14;
+  }
+
+  50% {
+    background-position: 100% 50%;
+    opacity: 0.26;
+  }
+}
+
+@keyframes featureIconPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 color-mix(in srgb, var(--accent-blue) 0%, transparent);
+    background: var(--primary-soft);
+  }
+
+  50% {
+    box-shadow: 0 12px 24px color-mix(in srgb, var(--accent-blue) 18%, transparent);
+    background: color-mix(in srgb, var(--accent-blue) 14%, transparent);
+  }
+}
+
+@keyframes featureCardDropIn {
+  from {
+    opacity: 0;
+    transform: translateY(4.5rem) scale(0.96);
+    filter: blur(10px);
+  }
+
+  68% {
+    opacity: 1;
+    transform: translateY(-0.35rem) scale(1.01);
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 980px) {
+
+  .heroShell,
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroInner {
+    min-height: auto;
+  }
+
+  .heroCopy h1 {
+    max-width: none;
+  }
+
+  .heroBackdrop {
+    right: 0;
+    width: 100%;
+    height: 22rem;
+    top: 68%;
+  }
+
+  .heroVisual {
+    justify-items: center;
+  }
+
+  .heroPhotoCard {
+    width: min(100%, 40rem);
+  }
+}
+
+@media (max-width: 720px) {
+  .heroSection {
+    padding-top: 1rem;
+  }
+
+  .heroInner,
+  .testimonialSection,
+  .featureSection {
+    width: min(1120px, calc(100% - 1.25rem));
+  }
+
+  .navbar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .mobileMenuToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobileOverlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 80;
+  }
+
+  .navActions {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 260px;
+    background: var(--surface);
+    padding: 6rem 1.5rem;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 1.2rem;
+    z-index: 90;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  }
+
+  .navActionsOpen {
+    transform: translateX(0);
+  }
+
+  .heroActions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 80%;
+  }
+
+  .navLink,
+  .navButton,
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+    text-align: center;
+
+  }
+
+  .heroCopy h1 {
+    font-size: clamp(2.25rem, 10vw, 3.2rem);
+  }
+
+  .heroCopy p,
+  .testimonialQuote,
+  .featureCard p {
+    font-size: 0.98rem;
+  }
+
+  .heroPhotoCard {
+    width: 100%;
+  }
+
+  .heroPhotoStage {
+    aspect-ratio: 4 / 3;
+  }
+
+  .heroBackdrop {
+    height: 18rem;
+    top: 74%;
+    filter: blur(14px);
+  }
+
+  .testimonialCard {
+    padding: 1.35rem;
+  }
+
+  .testimonialMeta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .testimonialShell {
+    padding: 0 0 3.25rem;
+  }
+
+  .testimonialButton {
+    top: auto;
+    bottom: 0;
+    transform: none;
+  }
+
+  .testimonialButton:hover {
+    transform: translateY(-2px);
+  }
+
+  .testimonialButtonLeft {
+    left: 0;
+  }
+
+  .testimonialButtonRight {
+    right: 0;
+  }
+
+  .featureCard,
+  .heroPhotoCard {
+    padding: 1.35rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroHeadlineLetter {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .heroImageSlide {
+    transition: none;
+  }
+
+  .featureCard {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    animation: none;
+  }
+
+  .featureCardVisible {
+    animation: none;
+  }
+
+  .featureCard:hover,
+  .heroPhotoCard:hover,
+  .featureCard:hover .featureIcon,
+  .featureCard:hover .featureAccent {
+    transform: none;
+  }
+
+  .featureCard::before,
+  .featureIcon {
+    animation: none;
+  }
+}

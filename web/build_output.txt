@@ -1,0 +1,45 @@
+
+> web@0.1.0 build
+> next build
+
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/halimah/Desktop/web3bridge/stash/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /home/halimah/Desktop/web3bridge/stash/web/package-lock.json
+
+▲ Next.js 16.2.4 (Turbopack)
+
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./web/app/ui/styles/dashboard.scss
+Error evaluating Node.js code
+Error: expected "}".
+     ╷
+1232 │ }
+     │  ^
+     ╵
+  app/ui/styles/dashboard.scss 1232:2  root stylesheet
+  (from /home/halimah/Desktop/web3bridge/stash/web/node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js, /home/halimah/Desktop/web3bridge/stash/web/node_modules/next/dist/compiled/sass-loader/cjs.js)
+Caused by: Error: expected "}".
+     ╷
+1232 │ }
+     │  ^
+     ╵
+  app/ui/styles/dashboard.scss 1232:2  root stylesheet
+    [at Object.wrapException (/home/halimah/Desktop/web3bridge/stash/web/node_modules/sass/sass.dart.js:2337:47)]
+    [at SpanScanner.error$3$length$position (/home/halimah/Desktop/web3bridge/stash/web/node_modules/sass/sass.dart.js:87427:15)]
+    [at SpanScanner.error$1 (/home/halimah/Desktop/web3bridge/stash/web/node_modules/sass/sass.dart.js:87430:19)]
+    [at ScssParser0._stylesheet0$_styleRule$2 (/home/halimah/Desktop/web3bridge/stash/web/node_modules/sass/sass.dart.js:124421:25)]
+    [at ScssParser0._stylesheet0$_declarationOrStyleRule$0 (/home/halimah/Desktop/web3bridge/stash/web/node_modules/sass/sass.dart.js:124260:88)]
+    [at ScssParser0._stylesheet0$_statement$1$root (/home/halimah/Desktop/web3bridge/stash/web/node_modules/sass/sass.dart.js:124175:162)]
+    [at ScssParser0._stylesheet0$_statement$0 (/home/halimah/Desktop/web3bridge/stash/web/node_modules/sass/sass.dart.js:124178:19)]
+    [at tear_off.call$0 (/home/halimah/Desktop/web3bridge/stash/web/node_modules/sass/sass.dart.js:2690:45)]
+    [at ScssParser0.children$1 (/home/halimah/Desktop/web3bridge/stash/web/node_modules/sass/sass.dart.js:119656:33)]
+    [at ScssParser0._stylesheet0$_withChildren$1$3 (/home/halimah/Desktop/web3bridge/stash/web/node_modules/sass/sass.dart.js:128118:39)]
+
+
+    at ignore-listed frames
