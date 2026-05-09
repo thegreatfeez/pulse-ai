@@ -1,22 +1,57 @@
 import { useState, useCallback, useRef } from 'react';
-import { supabase } from '../lib/supabase';
 import { computeRiskScore } from '../services/riskEngine';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
+const GROQ_MODEL = import.meta.env.VITE_GROQ_MODEL || 'llama-3.3-70b-versatile';
+const HISTORY_KEY = 'pulse_ai_analysis_history';
 
-async function callEdgeFunction(fnName, body) {
-  const res = await fetch(`${SUPABASE_URL}/functions/v1/${fnName}`, {
+function parseJsonContent(content) {
+  try {
+    return JSON.parse(content);
+  } catch {
+    const cleaned = String(content || '').replace(/```json|```/g, '').trim();
+    return JSON.parse(cleaned);
+  }
+}
+
+async function callGroq(prompt) {
+  if (!GROQ_API_KEY) {
+    throw new Error('Missing VITE_GROQ_API_KEY in .env');
+  }
+
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${GROQ_API_KEY}`,
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 700,
+      temperature: 0.2,
+    }),
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || `Edge function ${fnName} failed (${res.status})`);
-  return data;
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data?.error?.message || `Groq request failed (${res.status})`);
+  }
+
+  const content = data?.choices?.[0]?.message?.content;
+  if (!content) throw new Error('Groq returned empty response');
+  return parseJsonContent(content);
+}
+
+function saveAnalysisHistory(item) {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    const prev = raw ? JSON.parse(raw) : [];
+    const next = [item, ...prev].slice(0, 50);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
+  } catch (e) {
+    console.warn('[saveAnalysisHistory]', e);
+  }
 }
 
 const analysisCache = new Map();
@@ -42,41 +77,47 @@ export function useTokenAnalysis() {
 
     try {
       const risk = computeRiskScore(token);
-      const payload = {
-        token: {
-          ...token,
-          riskScore: risk.score,
-        },
-      };
+      const prompt = `You are a Solana DeFi risk analyst. Analyze this token and return JSON only.
 
-      const data = await callEdgeFunction('analyze-token', payload);
+TOKEN DATA:
+- Symbol: ${token.symbol}
+- Name: ${token.name}
+- Price: $${token.priceUsd}
+- 24h Change: ${token.priceChange24h}%
+- 1h Change: ${token.priceChange1h || 'N/A'}%
+- 24h Volume: $${token.volume24h}
+- Liquidity: $${token.liquidity}
+- FDV: $${token.fdv}
+- 24h Transactions: ${token.txns24h} (Buys: ${token.buys24h}, Sells: ${token.sells24h})
+- DEX: ${token.dexId}
+- Age: ${token.ageHours ? `${token.ageHours} hours` : 'Unknown'}
+- Risk Score: ${risk.score}/100
 
-      const result = data.analysis;
+Return valid JSON in this shape:
+{
+  "signal": "STRONG_BUY" | "BUY" | "HOLD" | "SELL" | "STRONG_SELL" | "AVOID",
+  "confidence": 0-100,
+  "summary": "2-3 sentence summary",
+  "bullish_factors": ["factor1", "factor2"],
+  "bearish_factors": ["factor1", "factor2"],
+  "risk_assessment": "1 sentence risk note",
+  "suggested_action": "What a trader should do right now in 1 sentence"
+}`;
+
+      const result = await callGroq(prompt);
       analysisCache.set(cacheKey, { data: result, ts: Date.now() });
       setAnalysis(result);
 
-      // Store in token_analysis table for history
-      const { error: insertErr } = await supabase
-        .from('token_analysis')
-        .insert({
-          token_address: token.address || token.mint,
-          token_name: token.name,
-          token_symbol: token.symbol,
-          rug_score: risk.score,
-          ai_signal: result.signal,
-          ai_reasoning: result.summary,
-          liquidity_usd: token.liquidity || 0,
-          volume_24h: token.volume24h || 0,
-          price_usd: token.priceUsd || 0,
-          price_change_24h: token.priceChange24h || 0,
-          market_cap: token.marketCap || token.fdv || 0,
-          pair_address: token.pairAddress || null,
-          dex_id: token.dexId || null,
-          pair_created_at: token.pairCreatedAt || null,
-        })
-        .then(r => r, e => ({ error: e }));
-
-      if (insertErr) console.warn('[token_analysis insert]', insertErr);
+      saveAnalysisHistory({
+        id: `${Date.now()}-${token.address || token.mint || token.symbol}`,
+        analyzed_at: new Date().toISOString(),
+        token_address: token.address || token.mint,
+        token_name: token.name,
+        token_symbol: token.symbol,
+        rug_score: risk.score,
+        ai_signal: result.signal || 'HOLD',
+        ai_reasoning: result.summary || 'No summary returned',
+      });
 
       setLoading(false);
       return result;
@@ -128,13 +169,23 @@ export function useMarketBrief() {
         })),
       } : null;
 
-      const data = await callEdgeFunction('market-brief', {
-        portfolio: enrichedPortfolio,
-        solPrice,
-        topDiscovery: enrichedDiscovery,
-      });
+      const prompt = `You are a Solana market analyst. Return JSON only.
 
-      const result = data.brief;
+SOL price: ${solPrice || 'unknown'}
+Portfolio: ${JSON.stringify(enrichedPortfolio)}
+Top discovery tokens: ${JSON.stringify(enrichedDiscovery)}
+
+Return JSON in this shape:
+{
+  "market_sentiment": "bullish" | "bearish" | "neutral" | "mixed",
+  "sol_outlook": "1-2 sentence outlook",
+  "portfolio_insights": ["insight1", "insight2"],
+  "top_opportunities": ["opportunity1", "opportunity2"],
+  "risk_warnings": ["warning1", "warning2"],
+  "action_items": ["action1", "action2"]
+}`;
+
+      const result = await callGroq(prompt);
       cacheRef.current = { data: result, ts: Date.now() };
       setBrief(result);
       setLoading(false);

@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { supabase } from '../lib/supabase';
 import RiskGauge from './RiskGauge';
 import usePulseProtocol from '../hooks/usePulseProtocol';
 import { SOLANA_CLUSTER } from '../config';
@@ -19,17 +18,7 @@ export default function Positions() {
   const fetchPositions = useCallback(async () => {
     if (!walletAddr) return;
     setLoading(true);
-    const { data, error } = await supabase
-      .from('positions')
-      .select('*')
-      .eq('wallet', walletAddr)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.warn('[Positions] fetch error:', error.message);
-    } else {
-      setPositions(data || []);
-    }
+    setPositions([]);
     setLoading(false);
   }, [walletAddr]);
 
