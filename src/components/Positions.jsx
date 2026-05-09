@@ -40,7 +40,7 @@ export default function Positions() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-xl font-bold">Trade Positions</h2>
         <button
           onClick={() => {
@@ -62,7 +62,7 @@ export default function Positions() {
           ) : (
             <div className="space-y-1.5">
               {positionIntents.slice(0, 10).map((intent) => (
-                <div key={`${intent.nonce}-${intent.tokenMint}`} className="text-xs flex items-center justify-between">
+                <div key={`${intent.nonce}-${intent.tokenMint}`} className="flex flex-wrap items-center justify-between gap-2 text-xs">
                   <span className={intent.side === 0 ? 'text-pulse-green' : 'text-pulse-red'}>
                     {intent.side === 0 ? 'BUY' : 'SELL'}
                   </span>
@@ -90,7 +90,7 @@ export default function Positions() {
         <div className="space-y-2">
           {SOLANA_CLUSTER === 'devnet' && positionIntents.map((intent) => (
             <div key={`intent-${intent.nonce}-${intent.tokenMint}`} className="bg-pulse-card border border-yellow-500/30 rounded-xl p-4">
-              <div className="flex items-center justify-between mb-2">
+              <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-2">
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                     intent.side === 0 ? 'bg-pulse-green/15 text-pulse-green' : 'bg-pulse-red/15 text-pulse-red'
@@ -101,7 +101,7 @@ export default function Positions() {
                   <span className="text-[10px] text-yellow-300">SIMULATED</span>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="grid grid-cols-1 gap-2 text-xs sm:grid-cols-3">
                 <div>
                   <span className="text-slate-500">Intent Nonce</span>
                   <p className="font-medium">{intent.nonce}</p>
@@ -119,7 +119,7 @@ export default function Positions() {
           ))}
           {positions.map(pos => (
             <div key={pos.id} className="bg-pulse-card border border-pulse-border rounded-xl p-4">
-              <div className="flex items-center justify-between mb-2">
+              <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-2">
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                     pos.side === 'buy' ? 'bg-pulse-green/15 text-pulse-green' : 'bg-pulse-red/15 text-pulse-red'
@@ -131,7 +131,7 @@ export default function Positions() {
                 </div>
                 {pos.risk_score != null && <RiskGauge score={pos.risk_score} size="sm" />}
               </div>
-              <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="grid grid-cols-1 gap-2 text-xs sm:grid-cols-3">
                 <div>
                   <span className="text-slate-500">Amount In</span>
                   <p className="font-medium">{pos.amount_in} {pos.input_symbol || 'SOL'}</p>
@@ -145,7 +145,7 @@ export default function Positions() {
                   <p className="font-medium">${pos.entry_price?.toFixed(6)}</p>
                 </div>
               </div>
-              <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
+              <div className="mt-2 flex flex-col gap-1 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
                 <span>{formatDate(pos.created_at)}</span>
                 <span>{pos.dex_id}</span>
               </div>
