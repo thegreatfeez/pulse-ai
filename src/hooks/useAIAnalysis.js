@@ -129,7 +129,13 @@ Return valid JSON in this shape:
     }
   }, []);
 
-  return { analysis, loading, error, analyze, clearAnalysis: () => setAnalysis(null) };
+  const clearAnalysis = useCallback(() => {
+    setAnalysis(null);
+    setLoading(false);
+    setError(null);
+  }, []);
+
+  return { analysis, loading, error, analyze, clearAnalysis };
 }
 
 export function useMarketBrief() {
@@ -198,5 +204,12 @@ Return JSON in this shape:
     }
   }, []);
 
-  return { brief, loading, error, fetchBrief };
+  const clearBrief = useCallback(() => {
+    cacheRef.current = { data: null, ts: 0 };
+    setBrief(null);
+    setLoading(false);
+    setError(null);
+  }, []);
+
+  return { brief, loading, error, fetchBrief, clearBrief };
 }

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import PulseLogo from './PulseLogo';
 import { BiMoon, BiSun } from 'react-icons/bi';
 
@@ -327,6 +328,8 @@ function LandingHeader({
             style={{ width: "30px", height: "30px" }}
             onClick={onToggleTheme} />}
 
+        {isConnected && <WalletMultiButton />}
+
         <button
           type="button"
           className="pulse-mobile-menu-toggle"
@@ -605,7 +608,7 @@ export default function PulseLandingPage({
               <div className="pulse-hero-backdrop" aria-hidden="true" />
 
               <div className="pulse-hero-copy">
-                <span className="pulse-eyebrow">Wallet-native risk intelligence</span>
+                {/* <span className="pulse-eyebrow">Wallet-native risk intelligence</span> */}
                 <LandingHeroHeading
                   text="Solana risk management that feels clear, specific, and ready for action."
                   accentText="risk management"
@@ -639,13 +642,13 @@ export default function PulseLandingPage({
                   )}
                 </div>
 
-                <div className="pulse-hero-inline-links">
+                {/* <div className="pulse-hero-inline-links">
                   <button type="button" className="pulse-inline-link" onClick={onOpenDiscover} disabled={!isConnected}>
                     {isConnected ? 'Jump to token discovery' : 'Connect to unlock discovery'}
                   </button>
                   <span className="pulse-inline-separator" aria-hidden="true" />
                   <a href="#features" className="pulse-inline-link">Review core capabilities</a>
-                </div>
+                </div> */}
               </div>
 
               <div className="pulse-hero-visual">

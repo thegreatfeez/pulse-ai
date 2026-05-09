@@ -14,16 +14,30 @@ export default function useWalletPortfolio(solPriceUsd) {
     loading: true,
     error: null,
   });
-  const cacheRef = useRef({ data: null, ts: 0 });
+  const cacheRef = useRef({ data: null, ts: 0, walletKey: null });
+  const walletStateRef = useRef({ connected: false, publicKey: null });
+
+  useEffect(() => {
+    walletStateRef.current = {
+      connected,
+      publicKey: publicKey?.toBase58() || null,
+    };
+  }, [connected, publicKey]);
 
   const fetchPortfolio = useCallback(async () => {
     if (!connected || !publicKey) {
+      cacheRef.current = { data: null, ts: 0, walletKey: null };
       setPortfolio({ solBalance: 0, tokens: [], totalValueUsd: 0, loading: false, error: null });
       return;
     }
 
+    const walletKey = publicKey.toBase58();
     const now = Date.now();
-    if (cacheRef.current.data && now - cacheRef.current.ts < 15000) {
+    if (
+      cacheRef.current.data &&
+      cacheRef.current.walletKey === walletKey &&
+      now - cacheRef.current.ts < 15000
+    ) {
       setPortfolio({ ...cacheRef.current.data, loading: false, error: null });
       return;
     }
@@ -179,10 +193,23 @@ export default function useWalletPortfolio(solPriceUsd) {
         totalValueUsd: solValueUsd + tokenValueUsd,
       };
 
-      cacheRef.current = { data: result, ts: now };
+      if (
+        !walletStateRef.current.connected ||
+        walletStateRef.current.publicKey !== walletKey
+      ) {
+        return;
+      }
+
+      cacheRef.current = { data: result, ts: now, walletKey };
       setPortfolio({ ...result, loading: false, error: null });
     } catch (err) {
       console.error('[useWalletPortfolio]', err);
+      if (
+        !walletStateRef.current.connected ||
+        walletStateRef.current.publicKey !== walletKey
+      ) {
+        return;
+      }
       setPortfolio(prev => ({ ...prev, loading: false, error: err.message }));
     }
   }, [connected, publicKey, connection, solPriceUsd]);

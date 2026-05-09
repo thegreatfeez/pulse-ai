@@ -91,6 +91,15 @@ function AppContent() {
   }, [theme]);
 
   useEffect(() => {
+    if (connected) return;
+
+    setSelectedToken(null);
+    setDetailToken(null);
+    setAiToken(null);
+    setSwapSide('buy');
+  }, [connected]);
+
+  useEffect(() => {
     if (typeof window === 'undefined') return undefined;
 
     const handlePopState = () => {
@@ -154,7 +163,7 @@ function AppContent() {
         onToggleTheme={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))}
         onGoHome={() => navigateToPath('/')}
       />
-      <main className="mx-auto w-[94%] pb-8 pt-24 md:w-[90%] md:pb-8 md:pt-28 lg:w-[82%] xl:w-[70%]">
+      <main className="dashboard-app-shell mx-auto w-[94%] pb-8 pt-24 md:w-[90%] md:pb-8 md:pt-28 lg:w-[82%] xl:w-[70%]">
         {activeTab === 'dashboard' && (
           <Dashboard onSelectToken={handleSelectToken} onSellToken={handleSellBack} />
         )}

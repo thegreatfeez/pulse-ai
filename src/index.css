@@ -150,6 +150,27 @@ html[data-theme='dark'] {
   }
 }
 
+@layer components {
+  html:not([data-theme='dark']) .dashboard-app-shell .text-slate-300,
+  html:not([data-theme='dark']) .dashboard-app-shell .text-slate-400 {
+    color: rgb(51 65 85);
+  }
+
+  html:not([data-theme='dark']) .dashboard-app-shell .text-slate-500,
+  html:not([data-theme='dark']) .dashboard-app-shell .text-slate-600 {
+    color: rgb(71 85 105);
+  }
+
+  html:not([data-theme='dark']) .dashboard-app-shell .bg-pulse-card .text-white {
+    color: rgb(var(--pulse-text));
+  }
+
+  html:not([data-theme='dark']) .dashboard-app-shell .bg-slate-800\/40,
+  html:not([data-theme='dark']) .dashboard-app-shell .bg-slate-800\/50 {
+    background-color: rgb(241 245 249 / 0.92);
+  }
+}
+
 .pulse-landing-page {
   min-height: 100vh;
   width: 100%;
