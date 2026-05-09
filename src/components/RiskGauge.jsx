@@ -13,7 +13,6 @@ export default function RiskGauge({ score, size = 'md' }) {
   return (
     <div className="flex flex-col items-center">
       <svg width={dim} height={dim / 2 + strokeWidth} viewBox={`0 0 ${dim} ${dim / 2 + strokeWidth}`}>
-        {/* Background arc */}
         <path
           d={`M ${strokeWidth / 2} ${dim / 2} A ${radius} ${radius} 0 0 1 ${dim - strokeWidth / 2} ${dim / 2}`}
           fill="none"
@@ -21,7 +20,6 @@ export default function RiskGauge({ score, size = 'md' }) {
           strokeWidth={strokeWidth}
           strokeLinecap="round"
         />
-        {/* Score arc */}
         <path
           d={`M ${strokeWidth / 2} ${dim / 2} A ${radius} ${radius} 0 0 1 ${dim - strokeWidth / 2} ${dim / 2}`}
           fill="none"
@@ -32,7 +30,6 @@ export default function RiskGauge({ score, size = 'md' }) {
           strokeDashoffset={offset}
           style={{ transition: 'stroke-dashoffset 0.8s ease' }}
         />
-        {/* Score text */}
         <text x={dim / 2} y={dim / 2 - 2} textAnchor="middle" fill={color} fontSize={fontSize} fontWeight="bold">
           {score}
         </text>

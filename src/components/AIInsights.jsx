@@ -13,19 +13,19 @@ import useElevenLabs from '../hooks/useElevenLabs';
 import { Volume2, VolumeX, Loader2 } from 'lucide-react';
 
 const SIGNAL_CONFIG = {
-  STRONG_BUY: { color: 'text-emerald-400', bg: 'bg-emerald-500/15', icon: '▲▲' },
-  BUY: { color: 'text-emerald-400', bg: 'bg-emerald-500/10', icon: '▲' },
-  HOLD: { color: 'text-yellow-400', bg: 'bg-yellow-500/10', icon: '●' },
-  SELL: { color: 'text-orange-400', bg: 'bg-orange-500/10', icon: '▼' },
-  STRONG_SELL: { color: 'text-red-400', bg: 'bg-red-500/15', icon: '▼▼' },
-  AVOID: { color: 'text-red-500', bg: 'bg-red-500/20', icon: '✕' },
+  STRONG_BUY: { color: 'text-emerald-400', bg: 'bg-emerald-600/15', icon: '▲▲' },
+  BUY: { color: 'text-emerald-400', bg: 'bg-emerald-600/10', icon: '▲' },
+  HOLD: { color: 'text-yellow-400', bg: 'bg-yellow-600/10', icon: '●' },
+  SELL: { color: 'text-orange-400', bg: 'bg-orange-600/10', icon: '▼' },
+  STRONG_SELL: { color: 'text-red-400', bg: 'bg-red-600/15', icon: '▼▼' },
+  AVOID: { color: 'text-red-600', bg: 'bg-red-600/20', icon: '✕' },
 };
 
 const SENTIMENT_CONFIG = {
-  bullish: { color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', label: 'Bullish', icon: '📈' },
-  bearish: { color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20', label: 'Bearish', icon: '📉' },
-  neutral: { color: 'text-slate-400', bg: 'bg-slate-500/10 border-slate-500/20', label: 'Neutral', icon: '➡' },
-  mixed: { color: 'text-yellow-400', bg: 'bg-yellow-500/10 border-yellow-500/20', label: 'Mixed', icon: '↕' },
+  bullish: { color: 'text-emerald-400', bg: 'bg-emerald-600/10 border-emerald-600/20', label: 'Bullish', icon: '📈' },
+  bearish: { color: 'text-red-400', bg: 'bg-red-600/10 border-red-600/20', label: 'Bearish', icon: '📉' },
+  neutral: { color: 'text-slate-400', bg: 'bg-slate-600/10 border-slate-600/20', label: 'Neutral', icon: '➡' },
+  mixed: { color: 'text-yellow-400', bg: 'bg-yellow-600/10 border-yellow-600/20', label: 'Mixed', icon: '↕' },
 };
 
 function MarketBriefCard({ brief, loading, onRefresh, onListen, isVoicePlaying, isVoiceLoading }) {
@@ -36,7 +36,7 @@ function MarketBriefCard({ brief, loading, onRefresh, onListen, isVoicePlaying, 
           <div className="w-8 h-8 border-2 border-pulse-accent border-t-transparent rounded-full animate-spin" />
           <div>
             <p className="font-semibold text-sm">Generating Market Brief...</p>
-            <p className="text-xs text-slate-500">Pulse AI is analyzing market conditions</p>
+            <p className="text-xs text-slate-600">Pulse AI is analyzing market conditions</p>
           </div>
         </div>
         <div className="space-y-2">
@@ -137,14 +137,14 @@ function MarketBriefCard({ brief, loading, onRefresh, onListen, isVoicePlaying, 
 
         {brief.sol_outlook && (
           <div className="bg-slate-800/40 rounded-lg p-3">
-            <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">SOL Outlook</p>
+            <b className="text-xs text-slate-600 uppercase tracking-wider mb-1">SOL Outlook</b>
             <p className="text-sm">{brief.sol_outlook}</p>
           </div>
         )}
 
         {brief.portfolio_insights?.length > 0 && (
           <div>
-            <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Portfolio Insights</p>
+            <b className="text-xs text-slate-600 uppercase tracking-wider mb-2">Portfolio Insights</b>
             <div className="space-y-1.5">
               {brief.portfolio_insights.map((insight, i) => (
                 <div key={i} className="flex items-start gap-2 text-sm">
@@ -158,7 +158,7 @@ function MarketBriefCard({ brief, loading, onRefresh, onListen, isVoicePlaying, 
 
         {brief.top_opportunities?.length > 0 && (
           <div>
-            <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Opportunities</p>
+            <p className="text-xs text-slate-600 uppercase tracking-wider mb-2">Opportunities</p>
             <div className="space-y-1.5">
               {brief.top_opportunities.map((opp, i) => (
                 <div key={i} className="flex items-start gap-2 text-sm">
@@ -172,7 +172,7 @@ function MarketBriefCard({ brief, loading, onRefresh, onListen, isVoicePlaying, 
 
         {brief.risk_warnings?.length > 0 && (
           <div>
-            <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Risk Warnings</p>
+            <b className="text-xs text-slate-600 uppercase tracking-wider mb-2">Risk Warnings</b>
             <div className="space-y-1.5">
               {brief.risk_warnings.map((warn, i) => (
                 <div key={i} className="flex items-start gap-2 text-sm">
@@ -210,18 +210,18 @@ function TokenAnalysisCard({ token, analysis, loading, onAnalyze, onListen, isVo
     <div className="bg-pulse-card border border-pulse-border rounded-xl overflow-hidden">
       <div className="px-5 py-4 border-b border-pulse-border">
         <h3 className="font-semibold text-sm">Quick Token Analysis</h3>
-        <p className="text-xs text-slate-500 mt-0.5">Select a token from Discover to get AI analysis</p>
+        <p className="text-xs text-slate-600 mt-0.5">Select a token from Discover to get AI analysis</p>
       </div>
 
       {!token ? (
-        <div className="p-8 text-center text-slate-500 text-sm">
+        <div className="p-8 text-center text-slate-600 text-sm">
           No token selected. Browse the Discover tab and click a token.
         </div>
       ) : (
         <div className="p-5 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center font-bold">
                 {token.symbol?.[0] || '?'}
               </div>
               <div>
@@ -254,7 +254,7 @@ function TokenAnalysisCard({ token, analysis, loading, onAnalyze, onListen, isVo
 
               {analysis.bullish_factors?.length > 0 && (
                 <div>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Bullish</p>
+                  <p className="text-[10px] text-slate-600 uppercase tracking-wider mb-1">Bullish</p>
                   {analysis.bullish_factors.map((f, i) => (
                     <p key={i} className="text-xs text-pulse-green flex items-start gap-1.5">
                       <span className="shrink-0">+</span> {f}
@@ -265,7 +265,7 @@ function TokenAnalysisCard({ token, analysis, loading, onAnalyze, onListen, isVo
 
               {analysis.bearish_factors?.length > 0 && (
                 <div>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Bearish</p>
+                  <p className="text-[10px] text-slate-600 uppercase tracking-wider mb-1">Bearish</p>
                   {analysis.bearish_factors.map((f, i) => (
                     <p key={i} className="text-xs text-pulse-red flex items-start gap-1.5">
                       <span className="shrink-0">-</span> {f}
@@ -317,7 +317,7 @@ function AnalysisHistoryRow({ item }) {
 
   return (
     <div className="flex items-center gap-3 px-4 py-3 hover:bg-slate-800/30 transition">
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-[10px] font-bold shrink-0">
+      <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold shrink-0">
         {item.token_symbol?.[0] || '?'}
       </div>
       <div className="flex-1 min-w-0">
@@ -329,7 +329,7 @@ function AnalysisHistoryRow({ item }) {
             </span>
           )}
         </div>
-        <p className="text-xs text-slate-500 truncate">{item.ai_reasoning}</p>
+        <p className="text-xs text-slate-600 truncate">{item.ai_reasoning}</p>
       </div>
       <div className="text-right shrink-0">
         <p className="text-xs text-slate-400">Risk {item.rug_score}</p>
@@ -354,8 +354,8 @@ export default function AIInsights({ selectedToken, onSelectToken }) {
   const { price } = useSolPrice();
   const portfolio = useWalletPortfolio(price?.usd);
   const { tokens: discoveryTokens } = useTokenDiscovery();
-  const { brief, loading: briefLoading, fetchBrief } = useMarketBrief();
-  const { analysis, loading: analysisLoading, analyze } = useTokenAnalysis();
+  const { brief, loading: briefLoading, fetchBrief, clearBrief } = useMarketBrief();
+  const { analysis, loading: analysisLoading, analyze, clearAnalysis } = useTokenAnalysis();
   const { history, loading: historyLoading, refresh: refreshHistory } = useAnalysisHistory();
   const { recordAdviceCommitment } = usePulseProtocol();
   const { play, stop, isPlaying, isLoading: isVoiceLoading } = useElevenLabs();
@@ -411,6 +411,13 @@ export default function AIInsights({ selectedToken, onSelectToken }) {
     }
   }, [selectedToken?.address, selectedToken?.mint]);
 
+  useEffect(() => {
+    if (connected) return;
+
+    clearBrief();
+    clearAnalysis();
+  }, [connected, clearBrief, clearAnalysis]);
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -421,7 +428,6 @@ export default function AIInsights({ selectedToken, onSelectToken }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Left Column - Market Brief */}
         <div className="space-y-4">
           <MarketBriefCard
             brief={brief}
@@ -432,10 +438,9 @@ export default function AIInsights({ selectedToken, onSelectToken }) {
             isVoiceLoading={isVoiceLoading}
           />
 
-          {/* Quick Stats */}
           <div className="grid grid-cols-3 gap-2">
             <div className="bg-pulse-card border border-pulse-border rounded-xl p-3 text-center">
-              <p className="text-xs text-slate-500">SOL Price</p>
+              <b className="text-xs text-slate-600">SOL Price</b>
               <p className="text-sm font-bold mt-1">${price?.usd?.toFixed(2) || '--'}</p>
               {price?.change24h != null && (
                 <p className={`text-[10px] mt-0.5 ${price.change24h >= 0 ? 'text-pulse-green' : 'text-pulse-red'}`}>
@@ -444,12 +449,12 @@ export default function AIInsights({ selectedToken, onSelectToken }) {
               )}
             </div>
             <div className="bg-pulse-card border border-pulse-border rounded-xl p-3 text-center">
-              <p className="text-xs text-slate-500">Tokens Tracked</p>
+              <b className="text-xs text-slate-600">Tokens Tracked</b>
               <p className="text-sm font-bold mt-1">{discoveryTokens.length}</p>
               <p className="text-[10px] text-slate-600 mt-0.5">live pairs</p>
             </div>
             <div className="bg-pulse-card border border-pulse-border rounded-xl p-3 text-center">
-              <p className="text-xs text-slate-500">Analyses Run</p>
+              <b className="text-xs text-slate-600">Analyses Run</b>
               <p className="text-sm font-bold mt-1">{history.length}</p>
               <p className="text-[10px] text-slate-600 mt-0.5">this session</p>
             </div>
@@ -484,7 +489,7 @@ export default function AIInsights({ selectedToken, onSelectToken }) {
                 <div className="w-5 h-5 border-2 border-pulse-accent border-t-transparent rounded-full animate-spin" />
               </div>
             ) : history.length === 0 ? (
-              <div className="py-8 text-center text-sm text-slate-500">
+              <div className="py-8 text-center text-sm text-slate-600">
                 No analyses yet. Select a token to get started.
               </div>
             ) : (

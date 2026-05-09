@@ -26,6 +26,19 @@ export default function usePulseProtocol() {
   const [positionIntents, setPositionIntents] = useState([]);
   const [profileLoading, setProfileLoading] = useState(false);
 
+  useEffect(() => {
+    if (connected && publicKey) return;
+
+    setLoading(false);
+    setError(null);
+    setProfile(null);
+    setProfilePda(null);
+    setRiskPolicy(null);
+    setRiskPolicyPda(null);
+    setPositionIntents([]);
+    setProfileLoading(false);
+  }, [connected, publicKey]);
+
   const refreshProfile = useCallback(async () => {
     if (!connected || !publicKey) {
       setProfile(null);

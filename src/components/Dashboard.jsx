@@ -5,6 +5,7 @@ import useWalletPortfolio from '../hooks/useWalletPortfolio';
 import RiskGauge from './RiskGauge';
 import { computeRiskScore, generateSignals } from '../services/riskEngine';
 import usePulseProtocol from '../hooks/usePulseProtocol';
+import PulseLogo from './PulseLogo';
 
 function StatCard({ label, value, sub, accent }) {
   return (
@@ -45,12 +46,11 @@ function TokenRow({ token, onClick }) {
         {signals.length > 0 && (
           <div className="flex gap-1 mt-1 flex-wrap">
             {signals.slice(0, 2).map((s, i) => (
-              <span key={i} className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-                s.type === 'danger' ? 'bg-red-500/20 text-red-400' :
-                s.type === 'alert' ? 'bg-orange-500/20 text-orange-400' :
-                s.type === 'warning' ? 'bg-yellow-500/20 text-yellow-400' :
-                'bg-emerald-500/20 text-emerald-400'
-              }`}>{s.label}</span>
+              <span key={i} className={`text-[10px] px-1.5 py-0.5 rounded-full ${s.type === 'danger' ? 'bg-red-500/20 text-red-400' :
+                  s.type === 'alert' ? 'bg-orange-500/20 text-orange-400' :
+                    s.type === 'warning' ? 'bg-yellow-500/20 text-yellow-400' :
+                      'bg-emerald-500/20 text-emerald-400'
+                }`}>{s.label}</span>
             ))}
           </div>
         )}
@@ -96,9 +96,10 @@ export default function Dashboard({ onSelectToken, onSellToken }) {
   if (!connected) {
     return (
       <div className="flex flex-col items-center justify-center py-24 px-4">
-        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-pulse-accent to-pulse-cyan flex items-center justify-center text-3xl font-bold mb-6">
+        {/* <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-pulse-accent to-pulse-cyan flex items-center justify-center text-3xl font-bold mb-6">
           P
-        </div>
+        </div> */}
+        <PulseLogo />
         <h2 className="text-2xl font-bold mb-2">Welcome to Solana Pulse AI</h2>
         <p className="text-slate-400 text-center max-w-md mb-8">
           Connect your Solana wallet to access real-time risk analysis, portfolio tracking,

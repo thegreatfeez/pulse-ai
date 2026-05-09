@@ -33,7 +33,7 @@ export default function TokenDetail({ token, portfolioValue = 0, onSwap, onAnaly
 
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-pulse-bg border border-pulse-border rounded-t-2xl md:rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div className="token-detail-panel bg-pulse-bg border border-pulse-border rounded-t-2xl md:rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-pulse-bg/95 backdrop-blur px-5 py-4 flex items-center justify-between border-b border-pulse-border">
           <div className="flex items-center gap-3">
@@ -91,7 +91,7 @@ export default function TokenDetail({ token, portfolioValue = 0, onSwap, onAnaly
               ['Buys', formatNumber(token.buys24h || 0)],
               ['Sells', formatNumber(token.sells24h || 0)],
             ].map(([label, val]) => (
-              <div key={label} className="bg-slate-800/50 rounded-lg p-2.5 text-center">
+              <div key={label} className="token-detail-stat-box bg-slate-800/50 rounded-lg p-2.5 text-center">
                 <p className="text-[10px] text-slate-500 uppercase tracking-wider">{label}</p>
                 <p className="text-sm font-semibold mt-0.5">{val}</p>
               </div>
@@ -99,7 +99,7 @@ export default function TokenDetail({ token, portfolioValue = 0, onSwap, onAnaly
           </div>
 
           {/* Risk Breakdown */}
-          <div className="bg-slate-800/30 rounded-xl p-4 space-y-2.5">
+          <div className="token-detail-risk-box bg-slate-800/30 rounded-xl p-4 space-y-2.5">
             <h4 className="text-sm font-semibold mb-3">Risk Breakdown</h4>
             <RiskBreakdownBar label="Liquidity" score={risk.breakdown.liquidity} max={25} />
             <RiskBreakdownBar label="Volume" score={risk.breakdown.volume} max={25} />
@@ -110,7 +110,7 @@ export default function TokenDetail({ token, portfolioValue = 0, onSwap, onAnaly
 
           {/* Position Sizing */}
           {portfolioValue > 0 && (
-            <div className="bg-pulse-accent/10 border border-pulse-accent/20 rounded-xl p-4">
+            <div className="token-detail-position-box bg-pulse-accent/10 border border-pulse-accent/20 rounded-xl p-4">
               <h4 className="text-sm font-semibold text-pulse-accent mb-2">Position Size Recommendation</h4>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-slate-400">Suggested allocation</span>
@@ -140,7 +140,7 @@ export default function TokenDetail({ token, portfolioValue = 0, onSwap, onAnaly
               href={`https://solscan.io/token/${address}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-3 bg-pulse-card border border-pulse-border rounded-xl hover:bg-slate-800 transition text-sm flex items-center"
+              className="token-detail-solscan px-4 py-3 bg-pulse-card border border-pulse-border rounded-xl hover:bg-slate-800 transition text-sm flex items-center"
             >
               Solscan
             </a>
