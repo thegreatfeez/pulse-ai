@@ -21,7 +21,7 @@ function TokenCard({ token, onSelect }) {
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2 min-w-0">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-xs font-bold shrink-0">
+          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">
             {token.symbol?.[0] || '?'}
           </div>
           <div className="min-w-0">
@@ -64,12 +64,11 @@ function TokenCard({ token, onSelect }) {
       {signals.length > 0 && (
         <div className="flex gap-1 flex-wrap">
           {signals.slice(0, 3).map((s, i) => (
-            <span key={i} className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
-              s.type === 'danger' ? 'bg-red-500/15 text-red-400' :
+            <span key={i} className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${s.type === 'danger' ? 'bg-red-500/15 text-red-400' :
               s.type === 'alert' ? 'bg-orange-500/15 text-orange-400' :
-              s.type === 'warning' ? 'bg-yellow-500/15 text-yellow-400' :
-              'bg-emerald-500/15 text-emerald-400'
-            }`}>
+                s.type === 'warning' ? 'bg-yellow-500/15 text-yellow-400' :
+                  'bg-emerald-500/15 text-emerald-400'
+              }`}>
               {s.label}
             </span>
           ))}

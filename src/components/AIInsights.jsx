@@ -256,7 +256,7 @@ function AnalysisHistoryRow({ item }) {
 
   return (
     <div className="flex items-center gap-3 px-4 py-3 hover:bg-slate-800/30 transition">
-      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-[10px] font-bold shrink-0">
+      <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold shrink-0">
         {item.token_symbol?.[0] || '?'}
       </div>
       <div className="flex-1 min-w-0">

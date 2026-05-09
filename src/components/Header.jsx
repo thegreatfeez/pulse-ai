@@ -153,15 +153,6 @@ export default function Header({ activeTab, setActiveTab, theme, onToggleTheme, 
             </button>
           ))}
         </nav>
-
-        {/* <div className="mt-6 border-t border-pulse-border pt-4"> */}
-        {/* <button
-            type="button"
-            className="w-full rounded-lg border border-pulse-border bg-pulse-card px-3 py-3 text-left text-sm font-medium text-pulse-text"
-          > */}
-
-        {/* </button> */}
-        {/* </div> */}
         <div className="mt-5 md:hidden">
           <WalletMultiButton />
         </div>
