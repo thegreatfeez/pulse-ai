@@ -4,7 +4,6 @@ import { useConnection } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL, VersionedTransaction } from '@solana/web3.js';
 import { getJupiterQuote, getJupiterSwapTx, lamportsFromSol } from '../services/swapService';
 import { computeRiskScore, getPositionSizeRecommendation } from '../services/riskEngine';
-import { supabase } from '../lib/supabase';
 import { SOL_MINT, SOLANA_CLUSTER } from '../config';
 import RiskGauge from './RiskGauge';
 import useSolPrice from '../hooks/useSolPrice';
@@ -169,29 +168,6 @@ export default function SwapPanel({ selectedToken, portfolioValue = 0, initialSi
 
       setTxHash(sig);
       setStatus('done');
-
-      // Log position to Supabase
-      const posPayload = {
-        wallet: publicKey.toBase58(),
-        token_address: outputMint,
-        token_symbol: selectedToken?.symbol || 'UNKNOWN',
-        token_name: selectedToken?.name || 'Unknown Token',
-        side: 'buy',
-        amount_in: parseFloat(amountSol),
-        input_symbol: 'SOL',
-        amount_out: quote.outAmount ? parseFloat(quote.outAmount) / Math.pow(10, selectedToken?.decimals || 6) : 0,
-        entry_price: selectedToken?.priceUsd || 0,
-        risk_score: risk?.score || 0,
-        dex_id: selectedToken?.dexId || 'jupiter',
-        tx_hash: sig,
-      };
-
-      const { error: insertErr } = await supabase
-        .from('positions')
-        .insert(posPayload)
-        .then(r => r, e => ({ error: e }));
-
-      if (insertErr) console.warn('[Position insert]', insertErr);
     } catch (err) {
       console.error('[Swap]', err);
       setErrorMsg(err.message || 'Swap failed');

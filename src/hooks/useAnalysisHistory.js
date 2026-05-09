@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { supabase } from '../lib/supabase';
+const HISTORY_KEY = 'pulse_ai_analysis_history';
 
 export default function useAnalysisHistory() {
   const [history, setHistory] = useState([]);
@@ -15,17 +15,14 @@ export default function useAnalysisHistory() {
     }
 
     setLoading(true);
-    const { data, error } = await supabase
-      .from('token_analysis')
-      .select('*')
-      .order('analyzed_at', { ascending: false })
-      .limit(20);
-
-    if (error) {
-      console.warn('[useAnalysisHistory]', error.message);
-    } else {
-      cacheRef.current = { data: data || [], ts: now };
-      setHistory(data || []);
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      const data = raw ? JSON.parse(raw) : [];
+      cacheRef.current = { data, ts: now };
+      setHistory(data);
+    } catch (error) {
+      console.warn('[useAnalysisHistory]', error?.message || error);
+      setHistory([]);
     }
     setLoading(false);
   }, []);
