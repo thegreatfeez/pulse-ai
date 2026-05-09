@@ -20,6 +20,7 @@ const TAB_ROUTES = {
   discover: '/dashboard/discover',
   positions: '/dashboard/positions',
   swap: '/dashboard/swap',
+  bridge: '/dashboard/bridge',
 };
 
 const ROUTE_TABS = Object.fromEntries(
