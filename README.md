@@ -27,6 +27,8 @@ Most trading assistants give generic suggestions. Pulse AI is designed to produc
 - React + Vite app
 - Solana wallet adapter integration
 - Dashboard, token discovery, AI insights, swap flow, positions
+- **Li.Fi Integration:** Cross-chain bridging and DEX aggregation
+- **ElevenLabs AI:** Ultra-realistic AI voice briefings for market insights
 
 ### On-Chain Protocol
 
@@ -65,7 +67,9 @@ For real token settlement, use a production swap route (mainnet Jupiter path).
 - **Solana:** `@solana/web3.js`
 - **Anchor TS client:** `@coral-xyz/anchor`
 - **On-chain:** Rust, Anchor
-- **Data/AI (current app layer):** Supabase + external AI provider integration
+- **Data/AI:** Supabase + Groq AI provider integration
+- **Cross-Chain:** Li.Fi Widget & SDK
+- **Voice AI:** ElevenLabs TTS API
 
 ---
 
@@ -94,6 +98,7 @@ VITE_GROQ_API_KEY=...
 VITE_PROGRAM_ID=8CxcCkx2KxpYGQLice4r6LdjNjqsXB7eB5E8ZQMG89ig
 VITE_HELIUS_RPC_URL=https://api.devnet.solana.com
 VITE_SOLANA_CLUSTER=devnet
+VITE_ELEVENLABS_API_KEY=...
 ```
 
 ---
