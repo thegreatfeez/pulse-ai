@@ -14,8 +14,46 @@ import BridgePanel from './components/BridgePanel';
 import useSolPrice from './hooks/useSolPrice';
 import useWalletPortfolio from './hooks/useWalletPortfolio';
 
+const TAB_ROUTES = {
+  dashboard: '/dashboard',
+  ai: '/dashboard/ai-insights',
+  discover: '/dashboard/discover',
+  positions: '/dashboard/positions',
+  swap: '/dashboard/swap',
+};
+
+const ROUTE_TABS = Object.fromEntries(
+  Object.entries(TAB_ROUTES).map(([tab, path]) => [path, tab]),
+);
+
+function resolveRoute(pathname) {
+  if (!pathname) {
+    return { surface: 'landing', activeTab: 'dashboard' };
+  }
+
+  const normalized = pathname.replace(/\/+$/, '') || '/';
+
+  if (normalized === '/') {
+    return { surface: 'landing', activeTab: 'dashboard' };
+  }
+
+  const activeTab = ROUTE_TABS[normalized];
+
+  if (activeTab) {
+    return { surface: 'app', activeTab };
+  }
+
+  return { surface: 'landing', activeTab: 'dashboard' };
+}
+
 function AppContent() {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [routeState, setRouteState] = useState(() => {
+    if (typeof window === 'undefined') {
+      return { surface: 'landing', activeTab: 'dashboard' };
+    }
+
+    return resolveRoute(window.location.pathname);
+  });
   const [selectedToken, setSelectedToken] = useState(null);
   const [swapSide, setSwapSide] = useState('buy');
   const [detailToken, setDetailToken] = useState(null);
@@ -24,15 +62,27 @@ function AppContent() {
     if (typeof window === 'undefined') return 'dark';
     return window.localStorage.getItem('pulse-theme') || 'dark';
   });
-  const [surface, setSurface] = useState(() => {
-    if (typeof window === 'undefined') return 'landing';
-    return window.localStorage.getItem('pulse-surface') || 'landing';
-  });
 
   const { connected } = useWallet();
   const { setVisible: setWalletModalVisible } = useWalletModal();
   const { price } = useSolPrice();
   const portfolio = useWalletPortfolio(price?.usd);
+  const { activeTab, surface } = routeState;
+
+  const navigateToPath = (path, { replace = false } = {}) => {
+    if (typeof window === 'undefined') return;
+
+    const nextRoute = resolveRoute(path);
+    const method = replace ? 'replaceState' : 'pushState';
+
+    window.history[method]({}, '', path);
+    setRouteState(nextRoute);
+  };
+
+  const navigateToTab = (tab, options) => {
+    const path = TAB_ROUTES[tab] || TAB_ROUTES.dashboard;
+    navigateToPath(path, options);
+  };
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -41,18 +91,19 @@ function AppContent() {
   }, [theme]);
 
   useEffect(() => {
-    if (!connected) {
-      setSurface('landing');
-    }
-  }, [connected]);
+    if (typeof window === 'undefined') return undefined;
 
-  useEffect(() => {
-    window.localStorage.setItem('pulse-surface', surface);
-  }, [surface]);
+    const handlePopState = () => {
+      setRouteState(resolveRoute(window.location.pathname));
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const openApp = (tab = 'dashboard') => {
-    setActiveTab(tab);
-    setSurface('app');
+    navigateToTab(tab);
     setDetailToken(null);
   };
 
@@ -64,23 +115,20 @@ function AppContent() {
     setSelectedToken(token);
     setSwapSide('buy');
     setDetailToken(null);
-    setActiveTab('swap');
-    setSurface('app');
+    navigateToTab('swap');
   };
 
   const handleSellBack = (token) => {
     setSelectedToken(token);
     setSwapSide('sell');
     setDetailToken(null);
-    setActiveTab('swap');
-    setSurface('app');
+    navigateToTab('swap');
   };
 
   const handleAnalyzeToken = (token) => {
     setAiToken(token);
     setDetailToken(null);
-    setActiveTab('ai');
-    setSurface('app');
+    navigateToTab('ai');
   };
 
   if (surface === 'landing') {
@@ -101,12 +149,12 @@ function AppContent() {
     <div className="min-h-screen bg-pulse-bg text-pulse-text">
       <Header
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={navigateToTab}
         theme={theme}
         onToggleTheme={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))}
-        onGoHome={() => setSurface('landing')}
+        onGoHome={() => navigateToPath('/')}
       />
-      <main className="mx-auto w-full max-w-7xl px-4 pb-6 pt-28 md:px-5 md:pb-6 md:pt-24 lg:px-6">
+      <main className="mx-auto w-[94%] pb-8 pt-24 md:w-[90%] md:pb-8 md:pt-28 lg:w-[82%] xl:w-[70%]">
         {activeTab === 'dashboard' && (
           <Dashboard onSelectToken={handleSelectToken} onSellToken={handleSellBack} />
         )}

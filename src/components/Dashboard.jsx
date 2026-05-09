@@ -23,7 +23,7 @@ function TokenRow({ token, onClick }) {
   return (
     <div
       onClick={() => onClick?.(token)}
-      className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800/50 transition cursor-pointer border border-transparent hover:border-pulse-border"
+      className="flex flex-col items-start gap-3 rounded-lg border border-transparent p-3 transition hover:border-pulse-border hover:bg-slate-800/50 sm:flex-row sm:items-center"
     >
       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pulse-accent to-pulse-cyan flex items-center justify-center text-xs font-bold shrink-0">
         {token.symbol?.[0] || '?'}
@@ -55,12 +55,14 @@ function TokenRow({ token, onClick }) {
           </div>
         )}
       </div>
-      <div className="text-right shrink-0">
+      <div className="w-full shrink-0 text-left sm:w-auto sm:text-right">
         <p className="text-sm font-medium">${(token.valueUsd || 0).toFixed(2)}</p>
         <p className="text-xs text-slate-500">{token.amount?.toFixed(2)} tokens</p>
         <p className="text-[10px] text-pulse-accent mt-0.5">Click to sell back</p>
       </div>
-      <RiskGauge score={risk.score} size="sm" />
+      <div className="self-start sm:self-center">
+        <RiskGauge score={risk.score} size="sm" />
+      </div>
     </div>
   );
 }
@@ -134,37 +136,39 @@ export default function Dashboard({ onSelectToken, onSellToken }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div>
           <h2 className="text-xl font-bold">Portfolio Dashboard</h2>
           <p className="text-sm text-slate-400 mt-0.5">
             {publicKey?.toBase58().slice(0, 4)}...{publicKey?.toBase58().slice(-4)}
           </p>
         </div>
-        <button
-          onClick={async () => {
-            try {
-              await initializeUserRiskProfile();
-            } catch (e) {
-              console.error('[initializeUserRiskProfile]', e);
-            }
-          }}
-          disabled={protocolLoading || profileLoading || !!profile}
-          className="px-3 py-1.5 text-xs bg-pulse-card border border-pulse-border rounded-lg hover:bg-slate-800 transition disabled:opacity-50 mr-2"
-        >
-          {profileLoading ? 'Checking Profile...' : protocolLoading ? 'Initializing...' : profile ? 'Profile Initialized' : 'Init On-Chain Profile'}
-        </button>
-        <button
-          onClick={portfolio.refresh}
-          disabled={portfolio.loading}
-          className="px-3 py-1.5 text-xs bg-pulse-card border border-pulse-border rounded-lg hover:bg-slate-800 transition disabled:opacity-50"
-        >
-          {portfolio.loading ? 'Refreshing...' : 'Refresh'}
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={async () => {
+              try {
+                await initializeUserRiskProfile();
+              } catch (e) {
+                console.error('[initializeUserRiskProfile]', e);
+              }
+            }}
+            disabled={protocolLoading || profileLoading || !!profile}
+            className="rounded-lg border border-pulse-border bg-pulse-card px-3 py-1.5 text-xs transition hover:bg-slate-800 disabled:opacity-50"
+          >
+            {profileLoading ? 'Checking Profile...' : protocolLoading ? 'Initializing...' : profile ? 'Profile Initialized' : 'Init On-Chain Profile'}
+          </button>
+          <button
+            onClick={portfolio.refresh}
+            disabled={portfolio.loading}
+            className="rounded-lg border border-pulse-border bg-pulse-card px-3 py-1.5 text-xs transition hover:bg-slate-800 disabled:opacity-50"
+          >
+            {portfolio.loading ? 'Refreshing...' : 'Refresh'}
+          </button>
+        </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Total Value"
           value={`$${portfolio.totalValueUsd.toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
@@ -194,7 +198,7 @@ export default function Dashboard({ onSelectToken, onSellToken }) {
         <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">On-Chain Risk Profile</p>
         {profile ? (
           <div className="space-y-3">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+            <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 xl:grid-cols-4">
               <div>
                 <p className="text-slate-500 text-xs">Risk Mode</p>
                 <p className="font-medium">{profile.riskMode}</p>
@@ -214,7 +218,7 @@ export default function Dashboard({ onSelectToken, onSellToken }) {
             </div>
             <div>
               <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Update Profile</p>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4">
                 <input
                   type="number"
                   min={0}
@@ -270,7 +274,7 @@ export default function Dashboard({ onSelectToken, onSellToken }) {
       <div className="bg-pulse-card border border-pulse-border rounded-xl p-4">
         <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">On-Chain Risk Policy</p>
         {riskPolicy ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+          <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 xl:grid-cols-4">
             <div>
               <p className="text-slate-500 text-xs">Max Position</p>
               <p className="font-medium">{(riskPolicy.maxPositionBps / 100).toFixed(2)}%</p>

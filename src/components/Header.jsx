@@ -1,9 +1,13 @@
+import { useEffect, useState } from 'react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import useSolPrice from '../hooks/useSolPrice';
 import PulseLogo from './PulseLogo';
+import { BiMenu, BiMoon, BiSun } from 'react-icons/bi';
+import { CgClose } from 'react-icons/cg';
 
 export default function Header({ activeTab, setActiveTab, theme, onToggleTheme, onGoHome }) {
   const { price } = useSolPrice();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const tabs = [
     { id: 'dashboard', label: 'Dashboard' },
@@ -14,12 +18,33 @@ export default function Header({ activeTab, setActiveTab, theme, onToggleTheme, 
     { id: 'bridge', label: 'Bridge' },
   ];
 
+  useEffect(() => {
+    if (!sidebarOpen) return undefined;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [sidebarOpen]);
+
+  const navigateMobile = (tabId) => {
+    setActiveTab(tabId);
+    setSidebarOpen(false);
+  };
+
+  const goHome = () => {
+    onGoHome();
+    setSidebarOpen(false);
+  };
+
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-pulse-border bg-pulse-bg/92 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 py-3.5">
+      <div className="mx-auto flex w-[94%] items-center justify-between gap-4 py-3.5 md:w-[92%] lg:w-[88%] xl:w-[80%]">
         <button
           type="button"
-          onClick={onGoHome}
+          onClick={goHome}
           className="flex items-center gap-3 border-none bg-transparent p-0 text-left"
         >
           <PulseLogo size={40} />
@@ -35,7 +60,7 @@ export default function Header({ activeTab, setActiveTab, theme, onToggleTheme, 
                   </span>
                 </span>
               ) : (
-              <span>Loading...</span>
+                <span>Loading...</span>
               )}
             </div>
           </div>
@@ -46,58 +71,102 @@ export default function Header({ activeTab, setActiveTab, theme, onToggleTheme, 
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`border-b-2 px-1 py-2 text-sm font-medium transition-all ${
-                activeTab === tab.id
-                  ? 'border-pulse-accent text-pulse-text'
-                  : 'border-transparent text-pulse-muted hover:text-pulse-text'
-              }`}
+              aria-current={activeTab === tab.id ? 'page' : undefined}
+              className={`border-b-2 px-1 py-2 text-sm font-medium transition-all ${activeTab === tab.id
+                ? 'border-pulse-accent text-pulse-text'
+                : 'border-transparent text-pulse-muted hover:text-pulse-text'
+                }`}
             >
               {tab.label}
             </button>
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={onToggleTheme}
-            className="hidden min-h-12 items-center rounded-xl border border-pulse-border bg-pulse-card px-4 text-sm font-medium text-pulse-text transition hover:border-pulse-accent/40 sm:inline-flex"
-          >
-            {theme === 'dark' ? 'Light mode' : 'Dark mode'}
-          </button>
-          <WalletMultiButton />
+        <div className="flex items-center gap-5">
+          {theme === 'dark' ?
+            <BiSun
+              style={{ width: "30px", height: "30px" }}
+              onClick={onToggleTheme} />
+            :
+            <BiMoon
+              style={{ width: "30px", height: "30px" }}
+              onClick={onToggleTheme} />}
+          <div className="hidden md:block">
+            <WalletMultiButton />
+          </div>
+
+          <BiMenu
+            className='md:hidden'
+            style={{ width: "40px", height: "40px" }}
+            onClick={() => setSidebarOpen(true)}
+          />
+
+          {/* <WalletMultiButton /> */}
         </div>
       </div>
 
-      <div className="md:hidden flex items-center gap-2 px-4 pb-3 overflow-x-auto">
+      {sidebarOpen && (
         <button
           type="button"
-          onClick={onGoHome}
-          className="shrink-0 rounded-lg border border-pulse-border bg-pulse-card px-3 py-2 text-xs font-medium text-pulse-text"
-        >
-          Home
-        </button>
-        <button
-          type="button"
-          onClick={onToggleTheme}
-          className="shrink-0 rounded-lg border border-pulse-border bg-pulse-card px-3 py-2 text-xs font-medium text-pulse-text"
-        >
-          {theme === 'dark' ? 'Light' : 'Dark'}
-        </button>
-        {tabs.map(tab => (
+          aria-label="Close dashboard navigation"
+          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <aside
+        id="mobile-dashboard-sidebar"
+        className={`fixed left-0 top-0 z-50 h-screen w-[82vw] max-w-80 border-r border-pulse-border bg-pulse-bg px-4 py-5 shadow-2xl transition-transform duration-200 md:hidden ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+      >
+        <div className="mb-6 flex items-center justify-between gap-3">
           <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-all ${
-              activeTab === tab.id
-                ? 'bg-pulse-accent text-white'
-                : 'text-pulse-muted bg-pulse-card'
-            }`}
+            type="button"
+            onClick={goHome}
+            className="flex items-center gap-3 border-none bg-transparent p-0 text-left"
           >
-            {tab.label}
+            <PulseLogo size={36} />
+            <div>
+              <p className="text-sm font-semibold text-pulse-text">Pulse AI</p>
+              <p className="text-xs text-pulse-muted">Dashboard</p>
+            </div>
           </button>
-        ))}
-      </div>
+
+          <CgClose
+            style={{ width: "40px", height: "40px" }}
+            onClick={() => setSidebarOpen(false)}
+          />
+        </div>
+
+        <nav className="flex flex-col gap-2">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => navigateMobile(tab.id)}
+              aria-current={activeTab === tab.id ? 'page' : undefined}
+              className={`rounded-lg px-3 py-3 text-left text-sm font-medium transition-all ${activeTab === tab.id
+                ? 'bg-pulse-accent text-white'
+                : 'bg-pulse-card text-pulse-muted hover:text-pulse-text'
+                }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+
+        {/* <div className="mt-6 border-t border-pulse-border pt-4"> */}
+        {/* <button
+            type="button"
+            className="w-full rounded-lg border border-pulse-border bg-pulse-card px-3 py-3 text-left text-sm font-medium text-pulse-text"
+          > */}
+
+        {/* </button> */}
+        {/* </div> */}
+        <div className="mt-5 md:hidden">
+          <WalletMultiButton />
+        </div>
+
+      </aside>
     </header>
   );
 }

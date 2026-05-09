@@ -195,7 +195,7 @@ export default function SwapPanel({ selectedToken, portfolioValue = 0, initialSi
         Swap {side === 'buy' ? 'SOL' : selectedToken.symbol} → {side === 'buy' ? selectedToken.symbol : 'SOL'}
       </h2>
       {isDevnet && (
-        <div className="flex gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setSide('buy')}
@@ -218,7 +218,7 @@ export default function SwapPanel({ selectedToken, portfolioValue = 0, initialSi
 
       {/* Risk Banner */}
       {risk && (
-        <div className={`rounded-xl p-4 border flex items-center gap-4 ${
+        <div className={`flex flex-col gap-4 rounded-xl border p-4 sm:flex-row sm:items-center ${
           risk.score <= 25 ? 'bg-emerald-500/5 border-emerald-500/20' :
           risk.score <= 50 ? 'bg-yellow-500/5 border-yellow-500/20' :
           risk.score <= 75 ? 'bg-orange-500/5 border-orange-500/20' :
@@ -299,7 +299,7 @@ export default function SwapPanel({ selectedToken, portfolioValue = 0, initialSi
 
         <div>
           <label className="text-xs text-slate-400 mb-1 block">Slippage Tolerance</label>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {[50, 100, 200, 500].map(bps => (
               <button
                 key={bps}
