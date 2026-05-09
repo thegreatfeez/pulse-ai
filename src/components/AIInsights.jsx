@@ -9,6 +9,8 @@ import RiskGauge from './RiskGauge';
 import { computeRiskScore } from '../services/riskEngine';
 import usePulseProtocol from '../hooks/usePulseProtocol';
 import { buildAdviceCommitmentPayloads } from '../lib/commitmentSchema';
+import useElevenLabs from '../hooks/useElevenLabs';
+import { Volume2, VolumeX, Loader2 } from 'lucide-react';
 
 const SIGNAL_CONFIG = {
   STRONG_BUY: { color: 'text-emerald-400', bg: 'bg-emerald-600/15', icon: '▲▲' },
@@ -26,7 +28,7 @@ const SENTIMENT_CONFIG = {
   mixed: { color: 'text-yellow-400', bg: 'bg-yellow-600/10 border-yellow-600/20', label: 'Mixed', icon: '↕' },
 };
 
-function MarketBriefCard({ brief, loading, onRefresh }) {
+function MarketBriefCard({ brief, loading, onRefresh, onListen, isVoicePlaying, isVoiceLoading }) {
   if (loading) {
     return (
       <div className="bg-pulse-card border border-pulse-border rounded-xl p-6">
@@ -83,6 +85,56 @@ function MarketBriefCard({ brief, loading, onRefresh }) {
       </div>
 
       <div className="p-5 space-y-4">
+        {/* Voice Briefing Button */}
+        <div className="flex items-center gap-3 bg-pulse-accent/5 border border-pulse-accent/20 rounded-xl p-3">
+          <button
+            onClick={() => {
+              const sections = [];
+              sections.push(`Market sentiment is ${brief.market_sentiment}.`);
+              if (brief.sol_outlook) sections.push(brief.sol_outlook);
+              
+              if (brief.portfolio_insights?.length > 0) {
+                sections.push(`Regarding your portfolio: ${brief.portfolio_insights.join('. ')}`);
+              }
+              
+              if (brief.top_opportunities?.length > 0) {
+                sections.push(`Current opportunities include: ${brief.top_opportunities.join('. ')}`);
+              }
+              
+              if (brief.risk_warnings?.length > 0) {
+                sections.push(`Attention, risk warnings: ${brief.risk_warnings.join('. ')}`);
+              }
+              
+              if (brief.action_items?.length > 0) {
+                sections.push(`Recommended actions: ${brief.action_items.join('. ')}`);
+              }
+
+              onListen(sections.join(' '));
+            }}
+            disabled={isVoiceLoading}
+            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+              isVoicePlaying ? 'bg-pulse-red text-white' : 'bg-pulse-accent text-white'
+            }`}
+          >
+            {isVoiceLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 
+             isVoicePlaying ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+          </button>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-pulse-text">
+              {isVoicePlaying ? 'Playing Briefing...' : 'Listen to AI Briefing'}
+            </p>
+            {isVoicePlaying ? (
+              <div className="flex gap-1 mt-1">
+                {[1, 2, 3, 4, 5].map(i => (
+                  <div key={i} className="w-1 bg-pulse-accent rounded-full animate-pulse" style={{ height: `${Math.random() * 12 + 4}px`, animationDelay: `${i * 0.1}s` }} />
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-pulse-muted">Hear Liam's professional market summary</p>
+            )}
+          </div>
+        </div>
+
         {brief.sol_outlook && (
           <div className="bg-slate-800/40 rounded-lg p-3">
             <b className="text-xs text-slate-600 uppercase tracking-wider mb-1">SOL Outlook</b>
@@ -150,7 +202,7 @@ function MarketBriefCard({ brief, loading, onRefresh }) {
   );
 }
 
-function TokenAnalysisCard({ token, analysis, loading, onAnalyze }) {
+function TokenAnalysisCard({ token, analysis, loading, onAnalyze, onListen, isVoicePlaying, isVoiceLoading }) {
   const risk = token ? computeRiskScore(token) : null;
   const signalCfg = analysis ? (SIGNAL_CONFIG[analysis.signal] || SIGNAL_CONFIG.HOLD) : null;
 
@@ -235,6 +287,15 @@ function TokenAnalysisCard({ token, analysis, loading, onAnalyze }) {
               >
                 Re-analyze
               </button>
+
+              <button
+                onClick={() => onListen(analysis.summary)}
+                disabled={isVoiceLoading}
+                className="flex items-center gap-2 text-xs text-pulse-accent hover:underline mt-2"
+              >
+                {isVoicePlaying ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
+                {isVoicePlaying ? 'Stop Listening' : 'Listen to Summary'}
+              </button>
             </div>
           ) : (
             <button
@@ -297,6 +358,7 @@ export default function AIInsights({ selectedToken, onSelectToken }) {
   const { analysis, loading: analysisLoading, analyze, clearAnalysis } = useTokenAnalysis();
   const { history, loading: historyLoading, refresh: refreshHistory } = useAnalysisHistory();
   const { recordAdviceCommitment } = usePulseProtocol();
+  const { play, stop, isPlaying, isLoading: isVoiceLoading } = useElevenLabs();
 
   const handleGenerateBrief = () => {
     fetchBrief(
@@ -371,6 +433,9 @@ export default function AIInsights({ selectedToken, onSelectToken }) {
             brief={brief}
             loading={briefLoading}
             onRefresh={handleGenerateBrief}
+            onListen={play}
+            isVoicePlaying={isPlaying}
+            isVoiceLoading={isVoiceLoading}
           />
 
           <div className="grid grid-cols-3 gap-2">
@@ -403,6 +468,9 @@ export default function AIInsights({ selectedToken, onSelectToken }) {
             analysis={selectedToken ? analysis : null}
             loading={analysisLoading}
             onAnalyze={handleAnalyzeToken}
+            onListen={play}
+            isVoicePlaying={isPlaying}
+            isVoiceLoading={isVoiceLoading}
           />
 
           {/* Analysis History */}
