@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import PulseLogo from './PulseLogo';
+import { BiMoon, BiSun } from 'react-icons/bi';
 
 const heroSlides = [
   {
@@ -317,14 +318,14 @@ function LandingHeader({
       </div>
 
       <div className="pulse-header-tools">
-        <button
-          type="button"
-          className="pulse-icon-button"
-          onClick={onToggleTheme}
-          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-        >
-          {theme === 'light' ? <MoonIcon /> : <SunIcon />}
-        </button>
+        {theme === 'dark' ?
+          <BiSun
+            style={{ width: "30px", height: "30px" }}
+            onClick={onToggleTheme} />
+          :
+          <BiMoon
+            style={{ width: "30px", height: "30px" }}
+            onClick={onToggleTheme} />}
 
         <button
           type="button"
